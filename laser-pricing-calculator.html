@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laser Engraving Pricing Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --coal: #1a1d23;
+            --slate: #2d3340;
+            --steel: #3d4654;
+            --silver: #8b95a5;
+            --white: #f8f9fa;
+            --amber: #ff9f43;
+            --amber-glow: #ffb366;
+            --red: #ee5a6f;
+            --green: #26de81;
+            --blue: #4b7bec;
+            --purple: #a55eea;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--coal) 0%, #0f1115 100%);
+            color: var(--white);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--steel);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; width: 60px; }
+            50% { opacity: 1; width: 100px; }
+        }
+
+        h1 {
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--white) 0%, var(--amber-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--silver);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--slate);
+            border: 1px solid var(--steel);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--amber), var(--amber-glow));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .label {
+            display: block;
+            color: var(--silver);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-with-prefix {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 15px;
+            color: var(--amber);
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            color: var(--white);
+            padding: 14px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"].with-prefix {
+            padding-left: 35px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.1);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: var(--silver);
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .range-indicator {
+            font-size: 12px;
+            color: var(--amber);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--amber) 0%, var(--amber-glow) 100%);
+            color: var(--coal);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 159, 67, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 159, 67, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: transparent;
+            border: 1px solid var(--steel);
+            color: var(--silver);
+            box-shadow: none;
+        }
+
+        button.secondary:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+            background: rgba(255, 159, 67, 0.05);
+        }
+
+        button.small {
+            padding: 8px 16px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cost-breakdown {
+            background: var(--coal);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 3px solid var(--amber);
+        }
+
+        .cost-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--steel);
+        }
+
+        .cost-line:last-child {
+            border-bottom: none;
+        }
+
+        .cost-label {
+            color: var(--silver);
+            font-size: 14px;
+        }
+
+        .cost-value {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--steel), transparent);
+            margin: 15px 0;
+        }
+
+        .total-cost {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--amber);
+        }
+
+        .pricing-options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pricing-card {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            border-radius: 8px;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--amber);
+            background: rgba(255, 159, 67, 0.05);
+            transform: translateX(5px);
+        }
+
+        .pricing-label {
+            font-size: 14px;
+            color: var(--silver);
+            margin-bottom: 4px;
+        }
+
+        .pricing-amount {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .pricing-markup {
+            font-size: 12px;
+            color: var(--amber);
+            font-weight: 600;
+        }
+
+        .educational-note {
+            background: rgba(255, 159, 67, 0.1);
+            border: 1px solid rgba(255, 159, 67, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .educational-note::before {
+            content: '💡';
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .educational-note p {
+            color: var(--white);
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .edit-preferences {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--silver);
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .edit-preferences:hover {
+            color: var(--amber);
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--steel);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: var(--amber);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--amber);
+        }
+
+        .checkbox-label {
+            color: var(--white);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .step-description {
+            background: rgba(255, 159, 67, 0.05);
+            border-left: 3px solid var(--amber);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .step-description p {
+            color: var(--silver);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .step-description p:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-description strong {
+            color: var(--white);
+        }
+
+        .depreciation-calc {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .depreciation-calc h4 {
+            color: var(--amber);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .calc-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .calc-result {
+            background: rgba(255, 159, 67, 0.1);
+            border: 1px solid var(--amber);
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .calc-result-label {
+            color: var(--silver);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .calc-result-value {
+            color: var(--amber);
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* NEW FEATURES STYLES */
+
+        /* Collapsible Instructions */
+        .instructions {
+            background: var(--slate);
+            border: 1px solid var(--steel);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .instructions-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .instructions-header:hover {
+            background: rgba(255, 159, 67, 0.05);
+        }
+
+        .instructions-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .instructions-toggle {
+            color: var(--amber);
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .instructions-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .instructions-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .instructions-content.open {
+            max-height: 500px;
+        }
+
+        .instructions-body {
+            padding: 0 20px 20px 20px;
+        }
+
+        .instructions-body ol {
+            margin-left: 20px;
+            color: var(--silver);
+            line-height: 1.8;
+        }
+
+        .instructions-body li {
+            margin-bottom: 10px;
+        }
+
+        .instructions-body strong {
+            color: var(--white);
+        }
+
+        .tips-section {
+            background: rgba(255, 159, 67, 0.1);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .tips-section h4 {
+            color: var(--amber);
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tips-section ul {
+            margin-left: 20px;
+            color: var(--silver);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* Example Projects */
+        .examples-section {
+            margin-bottom: 25px;
+        }
+
+        .examples-header {
+            font-size: 14px;
+            color: var(--amber);
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .examples-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--amber) var(--coal);
+        }
+
+        .examples-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .examples-scroll::-webkit-scrollbar-track {
+            background: var(--coal);
+            border-radius: 3px;
+        }
+
+        .examples-scroll::-webkit-scrollbar-thumb {
+            background: var(--amber);
+            border-radius: 3px;
+        }
+
+        .example-card {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 180px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .example-card:hover {
+            border-color: var(--amber);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(255, 159, 67, 0.2);
+        }
+
+        .example-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .example-details {
+            font-size: 12px;
+            color: var(--silver);
+            margin-bottom: 12px;
+        }
+
+        .example-card button {
+            padding: 8px 12px;
+            font-size: 11px;
+            width: 100%;
+        }
+
+        /* Bulk Pricing */
+        .bulk-section {
+            background: rgba(75, 123, 236, 0.1);
+            border: 1px solid rgba(75, 123, 236, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .bulk-section.hidden {
+            display: none;
+        }
+
+        .quantity-input {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .quantity-input.visible {
+            display: block;
+        }
+
+        /* Visual Profit Breakdown */
+        .profit-chart {
+            margin-bottom: 25px;
+        }
+
+        .profit-chart-title {
+            font-size: 14px;
+            color: var(--silver);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-bar {
+            display: flex;
+            height: 50px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .chart-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .chart-segment:hover {
+            filter: brightness(1.2);
+        }
+
+        .chart-segment.materials {
+            background: var(--red);
+        }
+
+        .chart-segment.labor {
+            background: var(--blue);
+        }
+
+        .chart-segment.overhead {
+            background: var(--silver);
+        }
+
+        .chart-segment.setup {
+            background: var(--purple);
+        }
+
+        .chart-segment.profit {
+            background: var(--green);
+        }
+
+        .chart-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+
+        .legend-label {
+            color: var(--silver);
+        }
+
+        .legend-value {
+            color: var(--white);
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        /* Project History */
+        .history-section {
+            background: var(--slate);
+            border: 1px solid var(--steel);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-item {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-item:hover {
+            border-color: var(--amber);
+            background: rgba(255, 159, 67, 0.05);
+        }
+
+        .history-item-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .history-delete {
+            background: transparent;
+            border: 1px solid var(--steel);
+            color: var(--silver);
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            padding: 0;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .history-delete:hover {
+            background: var(--red);
+            border-color: var(--red);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+
+        .history-info {
+            font-size: 13px;
+            color: var(--silver);
+        }
+
+        .history-price {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--amber);
+        }
+
+        .history-empty {
+            text-align: center;
+            color: var(--silver);
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: var(--amber);
+            margin-left: 6px;
+            font-size: 14px;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--coal);
+            color: var(--white);
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            border: 1px solid var(--steel);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            button {
+                display: none;
+            }
+
+            .edit-preferences {
+                display: none;
+            }
+
+            .instructions {
+                display: none;
+            }
+
+            .examples-section {
+                display: none;
+            }
+
+            .history-section {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .calc-row {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-legend {
+                grid-template-columns: 1fr;
+            }
+
+            .example-card {
+                min-width: 150px;
+            }
+        }
+
+        /* Quote Modal */
+        .quote-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .quote-modal-content {
+            background: var(--slate);
+            border: 1px solid var(--steel);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quote-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .quote-modal-header h2 {
+            font-size: 24px;
+            color: var(--white);
+        }
+
+        .quote-modal-close {
+            font-size: 32px;
+            color: var(--silver);
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s ease;
+        }
+
+        .quote-modal-close:hover {
+            color: var(--amber);
+        }
+
+        .quote-modal-description {
+            color: var(--silver);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .quote-form {
+            margin-top: 20px;
+        }
+
+        .quote-form .input-group {
+            margin-bottom: 20px;
+        }
+
+        .quote-form input[type="text"] {
+            width: 100%;
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            color: var(--white);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .quote-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.1);
+        }
+
+        .quote-tier-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .tier-button-small {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 13px;
+        }
+
+        .tier-button-small:hover {
+            border-color: var(--amber);
+            background: rgba(255, 159, 67, 0.1);
+        }
+
+        .tier-button-small.selected {
+            border-color: var(--amber);
+            background: rgba(255, 159, 67, 0.15);
+        }
+
+        .tier-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .tier-markup {
+            font-size: 14px;
+            color: var(--silver);
+        }
+
+        .quote-feedback {
+            display: none;
+            background: var(--green);
+            color: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Bulk Discount Section */
+        .bulk-discount-section {
+            background: rgba(38, 222, 129, 0.05);
+            border: 1px solid rgba(38, 222, 129, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .bulk-discount-inputs {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--steel);
+        }
+
+        .discount-badge {
+            background: var(--green);
+            color: var(--white);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Laser Engraving Pricing Calculator</h1>
+            <p class="subtitle">Professional pricing for your craft</p>
+        </div>
+
+        <!-- Setup Wizard -->
+        <div id="setupWizard" class="hidden">
+            <div class="card">
+                <div class="step-indicator">
+                    <div class="step-dot active" data-step="1"></div>
+                    <div class="step-dot" data-step="2"></div>
+                    <div class="step-dot" data-step="3"></div>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="wizard-step active" id="step1">
+                    <div class="card-header">
+                        <h2 class="card-title">Step 1: Your Hourly Rate</h2>
+                    </div>
+
+                    <div class="step-description">
+                        <p><strong>Why this matters:</strong> Your hourly rate is what you want to earn for your time and skill. This isn't just "wages" - it should reflect your expertise, the value you provide, and what your local market can support.</p>
+                        <p>Think about: What would you need to earn per hour to make this worth your time? What do similar skilled craftspeople charge in your area?</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="label">
+                            Your desired hourly rate (in dollars)
+                            <span class="tooltip">ⓘ
+                                <span class="tooltiptext">What you want to earn per hour for your time and skill. Consider your experience level, local cost of living, and market rates. Urban areas typically support $40-$50/hr, while rural areas may be $25-$35/hr.</span>
+                            </span>
+                        </label>
+                        <div class="input-with-prefix">
+                            <span class="input-prefix">$</span>
+                            <input type="number" id="hourlyRate" class="with-prefix" placeholder="40" min="0" step="1">
+                        </div>
+                        <p class="range-indicator">Typical range: $25-$50/hr depending on location and experience</p>
+                    </div>
+                    <button onclick="nextStep(2)">Continue</button>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="wizard-step" id="step2">
+                    <div class="card-header">
+                        <h2 class="card-title">Step 2: Business Overhead</h2>
+                    </div>
+
+                    <div class="step-description">
+                        <p><strong>Why this matters:</strong> Running a laser engraving business costs money beyond just materials and your time. Overhead includes electricity to run the laser, equipment maintenance, workspace rent (or home office portion), insurance, consumables, and most importantly - your laser machine depreciation.</p>
+                        <p><strong>How to calculate:</strong> Overhead is added as a percentage of your labor cost. If you work from home with minimal expenses, 10-20% is typical. If you rent commercial space or have higher utilities and insurance costs, use 25-40%.</p>
+                    </div>
+
+                    <div class="depreciation-calc">
+                        <h4>💡 Machine Depreciation Calculator</h4>
+                        <p style="color: var(--silver); font-size: 13px; margin-bottom: 15px;">Your laser machine is a major investment that wears out over time. Calculate how much to factor into your overhead:</p>
+
+                        <div class="calc-row">
+                            <div>
+                                <label class="label" style="font-size: 11px;">Laser Cost ($)</label>
+                                <div class="input-with-prefix">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="laserCost" class="with-prefix" placeholder="5000" min="0" step="100" oninput="calculateDepreciation()">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="label" style="font-size: 11px;">Expected Life (hours)</label>
+                                <input type="number" id="laserLifeHours" placeholder="10000" min="0" step="100" oninput="calculateDepreciation()">
+                            </div>
+                        </div>
+
+                        <div id="depreciationResult" class="calc-result" style="display: none;">
+                            <div class="calc-result-label">Machine Cost Per Hour</div>
+                            <div class="calc-result-value" id="costPerHour">$0.00</div>
+                            <p style="color: var(--silver); font-size: 11px; margin-top: 8px;">Factor this into your overhead or add it separately to each project</p>
+                        </div>
+
+                        <p style="color: var(--silver); font-size: 12px; margin-top: 15px; font-style: italic;">
+                            <strong>Example:</strong> A $5,000 laser with 10,000 hour life = $0.50/hour machine cost. If a project takes 30 minutes (0.5 hrs), that's $0.25 in machine depreciation you should recover.
+                        </p>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="label">
+                            Overhead percentage (% of labor cost)
+                            <span class="tooltip">ⓘ
+                                <span class="tooltiptext">This percentage covers: electricity to run your laser, equipment maintenance and depreciation, workspace costs, insurance, consumables (like masking tape, cleaning supplies), and other business expenses. It's calculated as a percentage of your labor cost. TIP: If you calculated machine depreciation above, you can factor that into this percentage or add it separately per project.</span>
+                            </span>
+                        </label>
+                        <div class="input-with-prefix">
+                            <span class="input-prefix">%</span>
+                            <input type="number" id="overheadPercent" class="with-prefix" placeholder="15" min="0" max="100" step="1">
+                        </div>
+                        <p class="range-indicator">Home shop: 10-20% • Commercial space: 25-40%</p>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 20px;">
+                        <button onclick="prevStep(1)" class="secondary">Back</button>
+                        <button onclick="nextStep(3)">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="wizard-step" id="step3">
+                    <div class="card-header">
+                        <h2 class="card-title">Step 3: Setup Fee (Optional)</h2>
+                    </div>
+
+                    <div class="step-description">
+                        <p><strong>Why this matters:</strong> Setup fees cover the work that happens before you even start engraving - preparing customer artwork, converting files to the right format, test runs, and machine calibration. This is real work that takes time, especially for custom designs.</p>
+                        <p><strong>When to charge it:</strong> Most laser engravers charge $15-$25 for custom work. You might waive it for repeat customers, large orders, or very simple jobs where the customer provides print-ready files. Enter $0 if you don't charge setup fees.</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="label">
+                            Default setup fee (in dollars)
+                            <span class="tooltip">ⓘ
+                                <span class="tooltiptext">One-time charge for: preparing and optimizing design files, converting artwork to laser-compatible formats, machine setup and calibration, test cuts if needed, and artwork cleanup. You can adjust this per-project later. Industry standard: $15-$25.</span>
+                            </span>
+                        </label>
+                        <div class="input-with-prefix">
+                            <span class="input-prefix">$</span>
+                            <input type="number" id="setupFee" class="with-prefix" placeholder="20" min="0" step="1" value="0">
+                        </div>
+                        <p class="range-indicator">Typical: $15-$25 for custom work (or $0 if you don't charge setup fees)</p>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="includeSetupByDefault" checked>
+                        <label for="includeSetupByDefault" class="checkbox-label">Automatically include this setup fee when calculating project prices</label>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 20px;">
+                        <button onclick="prevStep(2)" class="secondary">Back</button>
+                        <button onclick="completeSetup()">Complete Setup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Calculator -->
+        <div id="calculator" class="hidden">
+            <!-- Instructions Section -->
+            <div class="instructions">
+                <div class="instructions-header" onclick="toggleInstructions()">
+                    <span class="instructions-title">📖 How to Use This Calculator</span>
+                    <span class="instructions-toggle" id="instructionsToggle">▼</span>
+                </div>
+                <div class="instructions-content" id="instructionsContent">
+                    <div class="instructions-body">
+                        <ol>
+                            <li><strong>Complete Setup Wizard:</strong> Enter your hourly rate, overhead percentage, and default setup fee (one-time only, stored in your browser).</li>
+                            <li><strong>Enter Project Details:</strong> Input material costs, total time in minutes, and setup fee for this specific project.</li>
+                            <li><strong>Review Pricing:</strong> See your complete cost breakdown including materials, labor, overhead, and setup fees.</li>
+                            <li><strong>Choose Markup Tier:</strong> Select from 4 pricing tiers (30%, 50%, 75%, 100% markup) based on your market positioning.</li>
+                        </ol>
+                        <div class="tips-section">
+                            <h4>💡 Tips for Accurate Time Estimates</h4>
+                            <ul>
+                                <li>Include prep time: gathering materials, cleaning, masking</li>
+                                <li>Add machine setup: loading, focusing, test cuts</li>
+                                <li>Count actual engraving/cutting time</li>
+                                <li>Don't forget finishing: unloading, cleanup, quality check</li>
+                                <li>Factor in potential mistakes or re-runs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Project Details</h2>
+                    <a class="edit-preferences" onclick="editPreferences()">
+                        <span>⚙️</span>
+                        <span>Edit Preferences</span>
+                    </a>
+                </div>
+
+                <!-- Example Projects Section -->
+                <div class="examples-section">
+                    <div class="examples-header">Quick Examples - Load Common Projects</div>
+                    <div class="examples-scroll">
+                        <div class="example-card">
+                            <div class="example-name">Coaster</div>
+                            <div class="example-details">$3 material • 15 min</div>
+                            <button class="small" onclick="loadExample(3, 15)">Load Example</button>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-name">Cutting Board</div>
+                            <div class="example-details">$12 material • 30 min</div>
+                            <button class="small" onclick="loadExample(12, 30)">Load Example</button>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-name">Keychain</div>
+                            <div class="example-details">$2 material • 10 min</div>
+                            <button class="small" onclick="loadExample(2, 10)">Load Example</button>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-name">Wood Sign</div>
+                            <div class="example-details">$8 material • 25 min</div>
+                            <button class="small" onclick="loadExample(8, 25)">Load Example</button>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-name">Custom Trophy</div>
+                            <div class="example-details">$15 material • 45 min</div>
+                            <button class="small" onclick="loadExample(15, 45)">Load Example</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Material Cost Per Item (in dollars)
+                        <span class="tooltip">ⓘ
+                            <span class="tooltiptext">Enter the cost of materials for ONE item. Include wood, acrylic, leather, or whatever material you're engraving on. Don't forget to account for waste/mistakes.</span>
+                        </span>
+                    </label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix">$</span>
+                        <input type="number" id="materialCost" class="with-prefix" placeholder="5.00" min="0" step="0.01">
+                    </div>
+                    <p class="help-text">Example: One wood coaster blank costs $2.50, so enter $2.50</p>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Time Per Item (in minutes)
+                        <span class="tooltip">ⓘ
+                            <span class="tooltiptext">Minutes to make ONE item from start to finish: getting materials ready, loading the laser, focusing, actual engraving time, unloading, and any finishing work. Be realistic - include ALL time spent on one item.</span>
+                        </span>
+                    </label>
+                    <input type="number" id="minutes" placeholder="30" min="0" step="1" value="">
+                    <p class="help-text">Time for ONE item: setup, loading, engraving, unloading, and finishing</p>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Setup Fee for This Project (in dollars, optional)
+                        <span class="tooltip">ⓘ
+                            <span class="tooltiptext">One-time charge for design preparation, file conversion, and machine setup. Adjust this for each project - you might charge more for complex custom designs or waive it for repeat customers.</span>
+                        </span>
+                    </label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix">$</span>
+                        <input type="number" id="projectSetupFee" class="with-prefix" placeholder="20.00" min="0" step="1">
+                    </div>
+                    <p class="help-text">Charge for design prep and machine setup, or leave at $0 for simple repeat jobs</p>
+                </div>
+
+                <!-- Quantity -->
+                <div class="input-group">
+                    <label class="label">Quantity (optional)
+                        <span class="tooltip">ⓘ
+                            <span class="tooltiptext">If making multiple items, enter the quantity here. Results will show per-item pricing AND total cost for all items.</span>
+                        </span>
+                    </label>
+                    <input type="number" id="quantity" placeholder="1" min="1" step="1" value="1">
+                    <p class="help-text">Leave at 1 for single item, or enter quantity for batch pricing</p>
+                </div>
+
+                <!-- Bulk Discount Toggle -->
+                <div class="bulk-discount-section">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="enableBulkDiscount" onchange="toggleBulkDiscount()">
+                        <label for="enableBulkDiscount" class="checkbox-label">Enable volume discounts</label>
+                    </div>
+                    <div id="bulkDiscountInputs" class="bulk-discount-inputs" style="display: none;">
+                        <p class="help-text" style="margin-bottom: 10px;">Set discount thresholds (higher quantities get better discounts):</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label class="label" style="font-size: 11px;">Qty for 5% off</label>
+                                <input type="number" id="discount5Qty" placeholder="10" min="2" step="1" value="10">
+                            </div>
+                            <div>
+                                <label class="label" style="font-size: 11px;">Qty for 10% off</label>
+                                <input type="number" id="discount10Qty" placeholder="25" min="2" step="1" value="25">
+                            </div>
+                            <div>
+                                <label class="label" style="font-size: 11px;">Qty for 15% off</label>
+                                <input type="number" id="discount15Qty" placeholder="50" min="2" step="1" value="50">
+                            </div>
+                            <div>
+                                <label class="label" style="font-size: 11px;">Qty for 20% off</label>
+                                <input type="number" id="discount20Qty" placeholder="100" min="2" step="1" value="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="calculatePricing()">Calculate Pricing</button>
+            </div>
+
+            <div id="resultsSection" class="results">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Cost Breakdown</h2>
+                    </div>
+
+                    <div class="cost-breakdown">
+                        <div class="cost-line">
+                            <span class="cost-label">Material Cost (per item)</span>
+                            <span class="cost-value" id="resultMaterial">$0.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="cost-label">Labor (per item)</span>
+                            <span class="cost-value" id="resultLabor">$0.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="cost-label">Overhead (per item)</span>
+                            <span class="cost-value" id="resultOverhead">$0.00</span>
+                        </div>
+                        <div class="cost-line" id="setupFeeLine" style="display: none;">
+                            <span class="cost-label">Setup Fee</span>
+                            <span class="cost-value" id="resultSetupFee">$0.00</span>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="cost-line">
+                            <span class="cost-label">Cost Per Item</span>
+                            <span class="cost-value total-cost" id="resultTotal">$0.00</span>
+                        </div>
+                        <div class="cost-line" id="quantityTotalSection" style="display: none;">
+                            <span class="cost-label">Total for <span id="quantityAmount">1</span> Items</span>
+                            <span class="cost-value total-cost" id="resultTotalAllItems">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Visual Profit Breakdown -->
+                    <div class="profit-chart">
+                        <h3 class="profit-chart-title">Visual Cost & Profit Breakdown (at 50% markup)</h3>
+                        <div class="chart-bar" id="profitBar"></div>
+                        <div class="chart-legend" id="chartLegend"></div>
+                    </div>
+
+                    <h3 class="card-title" style="margin-bottom: 15px;">Suggested Pricing</h3>
+
+                    <div class="pricing-options" id="pricingOptions">
+                        <div class="pricing-card" onclick="updateProfitChart(30)" title="Click to see breakdown at this markup">
+                            <div>
+                                <div class="pricing-label">Cost + 30%</div>
+                                <div class="pricing-markup">Entry-level pricing</div>
+                            </div>
+                            <div>
+                                <div class="pricing-amount" id="price30">$0.00</div>
+                                <div class="pricing-markup" id="price30Total" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="pricing-card" onclick="updateProfitChart(50)" title="Click to see breakdown at this markup">
+                            <div>
+                                <div class="pricing-label">Cost + 50%</div>
+                                <div class="pricing-markup">Recommended</div>
+                            </div>
+                            <div>
+                                <div class="pricing-amount" id="price50">$0.00</div>
+                                <div class="pricing-markup" id="price50Total" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="pricing-card" onclick="updateProfitChart(75)" title="Click to see breakdown at this markup">
+                            <div>
+                                <div class="pricing-label">Cost + 75%</div>
+                                <div class="pricing-markup">Premium work</div>
+                            </div>
+                            <div>
+                                <div class="pricing-amount" id="price75">$0.00</div>
+                                <div class="pricing-markup" id="price75Total" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="pricing-card" onclick="updateProfitChart(100)" title="Click to see breakdown at this markup">
+                            <div>
+                                <div class="pricing-label">Cost + 100%</div>
+                                <div class="pricing-markup">Luxury/custom</div>
+                            </div>
+                            <div>
+                                <div class="pricing-amount" id="price100">$0.00</div>
+                                <div class="pricing-markup" id="price100Total" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="educational-note">
+                        <p><strong>Pricing Tip:</strong> Research similar items in your local market (Etsy, craft fairs, competitors) to determine which pricing tier fits your positioning. Custom and detailed work typically commands higher markups.</p>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
+                        <button onclick="generateClientQuote()" style="flex: 1; min-width: 200px;">📄 Generate Client Quote</button>
+                        <button onclick="copyQuote()" class="secondary" style="flex: 1;">Copy Internal Notes</button>
+                        <button onclick="window.print()" class="secondary">Print</button>
+                        <button onclick="resetCalculator()" class="secondary">New Calculation</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project History -->
+            <div class="history-section" id="historySection">
+                <div class="history-header">
+                    <h3 class="history-title">Recent Calculations</h3>
+                    <button class="secondary small" onclick="clearHistory()">Clear History</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">No calculations yet. Complete a calculation to see it here.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Quote Modal -->
+    <div id="quoteModal" class="quote-modal">
+        <div class="quote-modal-content">
+            <div class="quote-modal-header">
+                <h2>Generate Client Quote</h2>
+                <span class="quote-modal-close" onclick="closeQuoteModal()">&times;</span>
+            </div>
+            <p class="quote-modal-description">Create a professional quote document for your client:</p>
+
+            <div class="quote-form">
+                <div class="input-group">
+                    <label class="label">Your Business Name</label>
+                    <input type="text" id="businessName" placeholder="Your Business Name">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Your Email</label>
+                    <input type="email" id="businessEmail" placeholder="you@business.com">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Your Phone</label>
+                    <input type="tel" id="businessPhone" placeholder="(555) 123-4567">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Your Address (optional)</label>
+                    <input type="text" id="businessAddress" placeholder="123 Main St, City, State ZIP">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Client Name</label>
+                    <input type="text" id="clientName" placeholder="Client or Company Name">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Project Description (optional)</label>
+                    <input type="text" id="projectDescription" placeholder="e.g., Custom engraved coasters">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Sales Tax % (optional)</label>
+                    <input type="number" id="salesTaxRate" placeholder="0" min="0" max="100" step="0.01">
+                    <p class="help-text" style="font-size: 11px; margin-top: 4px;">Enter your local sales tax rate (e.g., 8.5 for 8.5%)</p>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Select Pricing Tier</label>
+                    <div class="quote-tier-buttons">
+                        <button type="button" onclick="selectTier(30)" class="tier-button-small" data-tier="30">
+                            <span class="tier-name">Entry (30%)</span>
+                        </button>
+                        <button type="button" onclick="selectTier(50)" class="tier-button-small selected" data-tier="50">
+                            <span class="tier-name">Standard (50%) ⭐</span>
+                        </button>
+                        <button type="button" onclick="selectTier(75)" class="tier-button-small" data-tier="75">
+                            <span class="tier-name">Premium (75%)</span>
+                        </button>
+                        <button type="button" onclick="selectTier(100)" class="tier-button-small" data-tier="100">
+                            <span class="tier-name">Luxury (100%)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="generateDocx()" style="width: 100%; margin-top: 10px;">
+                    📄 Generate Quote Document
+                </button>
+            </div>
+
+            <div id="quoteFeedback" class="quote-feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        // Storage keys
+        const STORAGE_KEY = 'laserPricingPreferences';
+        const HISTORY_KEY = 'laserPricingHistory';
+
+        // Load preferences from localStorage
+        function loadPreferences() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return null;
+        }
+
+        // Save preferences to localStorage
+        function savePreferences(prefs) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+        }
+
+        // Load history from localStorage
+        function loadHistory() {
+            const stored = localStorage.getItem(HISTORY_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return [];
+        }
+
+        // Save history to localStorage
+        function saveHistory(history) {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        }
+
+        // Add calculation to history
+        function addToHistory(materialCost, minutes, totalCost, quantity = 1) {
+            const history = loadHistory();
+            const entry = {
+                materialCost,
+                minutes,
+                totalCost,
+                quantity,
+                timestamp: new Date().toISOString()
+            };
+
+            history.unshift(entry);
+            if (history.length > 5) {
+                history.pop();
+            }
+
+            saveHistory(history);
+            displayHistory();
+        }
+
+        // Display history
+        function displayHistory() {
+            const history = loadHistory();
+            const historyList = document.getElementById('historyList');
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="history-empty">No calculations yet. Complete a calculation to see it here.</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map((entry, index) => `
+                <div class="history-item">
+                    <div class="history-item-details" onclick="loadFromHistory(${index})">
+                        <div class="history-info">
+                            $${entry.materialCost.toFixed(2)} materials • ${entry.minutes} min${entry.quantity > 1 ? ` • Qty: ${entry.quantity}` : ''}
+                        </div>
+                        <div class="history-price">$${entry.totalCost.toFixed(2)}</div>
+                    </div>
+                    <button class="history-delete" onclick="deleteHistoryItem(${index}); event.stopPropagation();" title="Delete this entry">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Delete individual history item
+        function deleteHistoryItem(index) {
+            const history = loadHistory();
+            history.splice(index, 1);
+            saveHistory(history);
+            displayHistory();
+        }
+
+        // Load from history
+        function loadFromHistory(index) {
+            const history = loadHistory();
+            const entry = history[index];
+
+            document.getElementById('materialCost').value = entry.materialCost;
+            document.getElementById('minutes').value = entry.minutes;
+
+            if (entry.quantity > 1) {
+                document.getElementById('enableBulkDiscount').checked = true;
+                toggleBulkDiscount();
+                document.getElementById('quantity').value = entry.quantity;
+            }
+
+            // Scroll to calculator
+            document.querySelector('#calculator .card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Clear history
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all calculation history?')) {
+                localStorage.removeItem(HISTORY_KEY);
+                displayHistory();
+            }
+        }
+
+        // Toggle instructions
+        function toggleInstructions() {
+            const content = document.getElementById('instructionsContent');
+            const toggle = document.getElementById('instructionsToggle');
+
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                toggle.classList.remove('open');
+            } else {
+                content.classList.add('open');
+                toggle.classList.add('open');
+            }
+        }
+
+        // Load example project
+        function loadExample(materialCost, minutes) {
+            document.getElementById('materialCost').value = materialCost;
+            document.getElementById('minutes').value = minutes;
+
+            // Scroll to inputs
+            document.getElementById('materialCost').focus();
+        }
+
+        // Toggle bulk discount inputs
+        function toggleBulkDiscount() {
+            const isChecked = document.getElementById('enableBulkDiscount').checked;
+            const inputs = document.getElementById('bulkDiscountInputs');
+
+            if (isChecked) {
+                inputs.style.display = 'block';
+            } else {
+                inputs.style.display = 'none';
+            }
+        }
+
+        // Calculate bulk discount based on quantity
+        function calculateBulkDiscount(quantity) {
+            const enabled = document.getElementById('enableBulkDiscount').checked;
+            if (!enabled || quantity < 2) return 0;
+
+            const discount5Qty = parseInt(document.getElementById('discount5Qty').value) || 10;
+            const discount10Qty = parseInt(document.getElementById('discount10Qty').value) || 25;
+            const discount15Qty = parseInt(document.getElementById('discount15Qty').value) || 50;
+            const discount20Qty = parseInt(document.getElementById('discount20Qty').value) || 100;
+
+            if (quantity >= discount20Qty) return 20;
+            if (quantity >= discount15Qty) return 15;
+            if (quantity >= discount10Qty) return 10;
+            if (quantity >= discount5Qty) return 5;
+            return 0;
+        }
+
+        // Store calculation results for quote generation
+        let currentCalculation = {};
+        let selectedTier = 50; // Default to standard 50%
+
+        // Generate client quote modal
+        function generateClientQuote() {
+            const modal = document.getElementById('quoteModal');
+            modal.style.display = 'flex';
+
+            // Load saved business info if available
+            const savedBusinessName = localStorage.getItem('businessName');
+            const savedBusinessEmail = localStorage.getItem('businessEmail');
+            const savedBusinessPhone = localStorage.getItem('businessPhone');
+            const savedBusinessAddress = localStorage.getItem('businessAddress');
+
+            if (savedBusinessName) document.getElementById('businessName').value = savedBusinessName;
+            if (savedBusinessEmail) document.getElementById('businessEmail').value = savedBusinessEmail;
+            if (savedBusinessPhone) document.getElementById('businessPhone').value = savedBusinessPhone;
+            if (savedBusinessAddress) document.getElementById('businessAddress').value = savedBusinessAddress;
+        }
+
+        function closeQuoteModal() {
+            document.getElementById('quoteModal').style.display = 'none';
+        }
+
+        function selectTier(tier) {
+            selectedTier = tier;
+            // Update button styles
+            document.querySelectorAll('.tier-button-small').forEach(btn => {
+                if (parseInt(btn.dataset.tier) === tier) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        async function generateDocx() {
+            // Check if docx library is loaded
+            if (typeof docx === 'undefined') {
+                alert('Document library is still loading. Please wait a moment and try again.');
+                return;
+            }
+
+            const businessName = document.getElementById('businessName').value.trim();
+            const businessEmail = document.getElementById('businessEmail').value.trim();
+            const businessPhone = document.getElementById('businessPhone').value.trim();
+            const businessAddress = document.getElementById('businessAddress').value.trim();
+            const clientName = document.getElementById('clientName').value.trim();
+            const projectDescription = document.getElementById('projectDescription').value.trim();
+            const salesTaxRate = parseFloat(document.getElementById('salesTaxRate').value) || 0;
+
+            if (!businessName) {
+                alert('Please enter your business name');
+                return;
+            }
+            if (!businessEmail) {
+                alert('Please enter your email');
+                return;
+            }
+            if (!businessPhone) {
+                alert('Please enter your phone number');
+                return;
+            }
+            if (!clientName) {
+                alert('Please enter the client name');
+                return;
+            }
+
+            // Save business info for future use
+            localStorage.setItem('businessName', businessName);
+            localStorage.setItem('businessEmail', businessEmail);
+            localStorage.setItem('businessPhone', businessPhone);
+            if (businessAddress) localStorage.setItem('businessAddress', businessAddress);
+
+            const calc = currentCalculation;
+            let markup;
+
+            // Calculate final pricing (internal markup not shown to client)
+            switch(selectedTier) {
+                case 30: markup = calc.costPerItem * 0.30; break;
+                case 50: markup = calc.costPerItem * 0.50; break;
+                case 75: markup = calc.costPerItem * 0.75; break;
+                case 100: markup = calc.costPerItem * 1.00; break;
+            }
+
+            // Apply bulk discount if applicable
+            const bulkDiscountPercent = calculateBulkDiscount(calc.quantity);
+            const bulkDiscountMultiplier = 1 - (bulkDiscountPercent / 100);
+
+            const pricePerItem = (calc.costPerItem + markup) * bulkDiscountMultiplier;
+            const subtotal = pricePerItem * calc.quantity;
+            const salesTax = subtotal * (salesTaxRate / 100);
+            const totalPrice = subtotal + salesTax;
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const quoteNumber = `Q-${Date.now()}`;
+
+            // Line item description
+            const lineItemDesc = projectDescription || "Laser Engraving Service";
+
+            // Create document using docx library
+            const { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun, AlignmentType, WidthType, BorderStyle, ShadingType } = docx;
+
+            // Define borders for tables
+            const tableBorder = { style: BorderStyle.SINGLE, size: 6, color: "999999" };
+            const tableBorders = { top: tableBorder, bottom: tableBorder, left: tableBorder, right: tableBorder };
+
+            const doc = new Document({
+                styles: {
+                    default: {
+                        document: {
+                            run: { font: "Arial", size: 22 }
+                        }
+                    }
+                },
+                sections: [{
+                    properties: {
+                        page: {
+                            size: { width: 12240, height: 15840 }, // US Letter
+                            margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+                        }
+                    },
+                    children: [
+                        // Business Name Header
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: businessName, bold: true, size: 36, color: "1a1d23" })
+                            ],
+                            alignment: AlignmentType.CENTER,
+                            spacing: { after: 100 }
+                        }),
+
+                        // Contact Info
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: businessEmail, size: 20 })
+                            ],
+                            alignment: AlignmentType.CENTER,
+                            spacing: { after: 50 }
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: businessPhone, size: 20 })
+                            ],
+                            alignment: AlignmentType.CENTER,
+                            spacing: { after: businessAddress ? 50 : 300 }
+                        }),
+                        ...(businessAddress ? [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({ text: businessAddress, size: 20 })
+                                ],
+                                alignment: AlignmentType.CENTER,
+                                spacing: { after: 300 }
+                            })
+                        ] : []),
+
+                        // Quote Title
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: "QUOTATION", bold: true, size: 32, color: "ff9f43" })
+                            ],
+                            alignment: AlignmentType.CENTER,
+                            spacing: { after: 600 }
+                        }),
+
+                        // Quote Number and Date
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: "Quote #: ", bold: true }),
+                                new TextRun(quoteNumber)
+                            ],
+                            spacing: { after: 100 }
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: "Date: ", bold: true }),
+                                new TextRun(today)
+                            ],
+                            spacing: { after: 300 }
+                        }),
+
+                        // Client Info
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: "Prepared for:", bold: true, size: 24 })
+                            ],
+                            spacing: { after: 100 }
+                        }),
+                        new Paragraph({
+                            text: clientName,
+                            spacing: { after: 400 }
+                        }),
+
+                        // Line Items Table
+                        new Table({
+                            width: { size: 9360, type: WidthType.DXA },
+                            columnWidths: [6000, 1160, 1160, 1040],
+                            rows: [
+                                // Header Row
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            shading: { fill: "f0f0f0", type: ShadingType.CLEAR },
+                                            margins: { top: 100, bottom: 100, left: 150, right: 150 },
+                                            width: { size: 6000, type: WidthType.DXA },
+                                            children: [new Paragraph({ children: [new TextRun({ text: "Description", bold: true })] })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            shading: { fill: "f0f0f0", type: ShadingType.CLEAR },
+                                            margins: { top: 100, bottom: 100, left: 150, right: 150 },
+                                            width: { size: 1160, type: WidthType.DXA },
+                                            children: [new Paragraph({ children: [new TextRun({ text: "Qty", bold: true })], alignment: AlignmentType.CENTER })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            shading: { fill: "f0f0f0", type: ShadingType.CLEAR },
+                                            margins: { top: 100, bottom: 100, left: 150, right: 150 },
+                                            width: { size: 1160, type: WidthType.DXA },
+                                            children: [new Paragraph({ children: [new TextRun({ text: "Unit Price", bold: true })], alignment: AlignmentType.RIGHT })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            shading: { fill: "f0f0f0", type: ShadingType.CLEAR },
+                                            margins: { top: 100, bottom: 100, left: 150, right: 150 },
+                                            width: { size: 1040, type: WidthType.DXA },
+                                            children: [new Paragraph({ children: [new TextRun({ text: "Total", bold: true })], alignment: AlignmentType.RIGHT })]
+                                        })
+                                    ]
+                                }),
+                                // Line Item Row
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 6000, type: WidthType.DXA },
+                                            children: [new Paragraph(lineItemDesc)]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 1160, type: WidthType.DXA },
+                                            children: [new Paragraph({ text: calc.quantity.toString(), alignment: AlignmentType.CENTER })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 1160, type: WidthType.DXA },
+                                            children: [new Paragraph({ text: `$${pricePerItem.toFixed(2)}`, alignment: AlignmentType.RIGHT })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 1040, type: WidthType.DXA },
+                                            children: [new Paragraph({ text: `$${subtotal.toFixed(2)}`, alignment: AlignmentType.RIGHT })]
+                                        })
+                                    ]
+                                }),
+                                // Subtotal Row
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 6000, type: WidthType.DXA },
+                                            columnSpan: 3,
+                                            children: [new Paragraph({ children: [new TextRun({ text: "Subtotal", bold: true })], alignment: AlignmentType.RIGHT })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 1040, type: WidthType.DXA },
+                                            children: [new Paragraph({ text: `$${subtotal.toFixed(2)}`, alignment: AlignmentType.RIGHT })]
+                                        })
+                                    ]
+                                }),
+                                // Tax Row (if applicable)
+                                ...(salesTaxRate > 0 ? [new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 6000, type: WidthType.DXA },
+                                            columnSpan: 3,
+                                            children: [new Paragraph({ text: `Sales Tax (${salesTaxRate}%)`, alignment: AlignmentType.RIGHT })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 1040, type: WidthType.DXA },
+                                            children: [new Paragraph({ text: `$${salesTax.toFixed(2)}`, alignment: AlignmentType.RIGHT })]
+                                        })
+                                    ]
+                                })] : []),
+                                // Total Row
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 6000, type: WidthType.DXA },
+                                            columnSpan: 3,
+                                            children: [new Paragraph({ children: [new TextRun({ text: "TOTAL", bold: true, size: 26 })], alignment: AlignmentType.RIGHT })]
+                                        }),
+                                        new TableCell({
+                                            borders: tableBorders,
+                                            shading: { fill: "fff3e0", type: ShadingType.CLEAR },
+                                            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+                                            width: { size: 1040, type: WidthType.DXA },
+                                            children: [new Paragraph({ children: [new TextRun({ text: `$${totalPrice.toFixed(2)}`, bold: true, size: 26 })], alignment: AlignmentType.RIGHT })]
+                                        })
+                                    ]
+                                })
+                            ]
+                        }),
+
+                        // Spacing
+                        new Paragraph({ text: "", spacing: { after: 600 } }),
+
+                        // Terms and Conditions
+                        new Paragraph({
+                            children: [new TextRun({ text: "Terms & Conditions", bold: true, size: 24 })],
+                            spacing: { after: 200 }
+                        }),
+                        new Paragraph({
+                            text: "• This quote is valid for 30 days from the date above.",
+                            spacing: { after: 100 }
+                        }),
+                        new Paragraph({
+                            text: "• Payment is due upon completion of work.",
+                            spacing: { after: 100 }
+                        }),
+                        new Paragraph({
+                            text: "• Any changes to the scope of work may result in additional charges.",
+                            spacing: { after: 400 }
+                        }),
+
+                        // Footer
+                        new Paragraph({ text: "", spacing: { after: 400 } }),
+                        new Paragraph({
+                            children: [new TextRun({ text: "Thank you for your business!", italics: true, size: 24 })],
+                            alignment: AlignmentType.CENTER,
+                            spacing: { after: 100 }
+                        }),
+                        new Paragraph({
+                            children: [new TextRun({ text: "Please contact us if you have any questions about this quote.", italics: true })],
+                            alignment: AlignmentType.CENTER
+                        })
+                    ]
+                }]
+            });
+
+            // Generate and download
+            const feedback = document.getElementById('quoteFeedback');
+            try {
+                feedback.style.display = 'block';
+                feedback.textContent = 'Generating document...';
+                feedback.style.backgroundColor = 'var(--amber)';
+
+                const blob = await Packer.toBlob(doc);
+                saveAs(blob, `Quote_${clientName.replace(/\s+/g, '_')}_${Date.now()}.docx`);
+
+                // Show success feedback
+                feedback.style.backgroundColor = 'var(--green)';
+                feedback.textContent = '✓ Quote document generated successfully!';
+
+                setTimeout(() => {
+                    closeQuoteModal();
+                    feedback.style.display = 'none';
+                }, 2000);
+            } catch (err) {
+                console.error('Error generating document:', err);
+                feedback.style.backgroundColor = 'var(--red)';
+                feedback.textContent = 'Error: ' + err.message;
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Copy internal quote
+        function copyQuote() {
+            const calc = currentCalculation;
+            const setupLine = calc.setupFee > 0 ? `Setup: $${(calc.setupFee / calc.quantity).toFixed(2)}\n` : '';
+            const quantityInfo = calc.quantity > 1 ? ` (×${calc.quantity})` : '';
+
+            const quote = `COST BREAKDOWN${quantityInfo}:
+Materials: $${calc.materialCost.toFixed(2)}
+Labor: $${calc.laborCost.toFixed(2)}
+Overhead: $${calc.overheadCost.toFixed(2)}
+${setupLine}Total Cost: $${calc.costPerItem.toFixed(2)}
+
+PRICING OPTIONS:
+30% markup: $${(calc.costPerItem * 1.30).toFixed(2)}
+50% markup: $${(calc.costPerItem * 1.50).toFixed(2)}
+75% markup: $${(calc.costPerItem * 1.75).toFixed(2)}
+100% markup: $${(calc.costPerItem * 2.00).toFixed(2)}`;
+
+            navigator.clipboard.writeText(quote).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.backgroundColor = 'var(--green)';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.backgroundColor = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy to clipboard. Please try again.');
+            });
+        }
+
+        // Initialize app
+        function init() {
+            const prefs = loadPreferences();
+            if (prefs) {
+                // Show calculator
+                document.getElementById('setupWizard').classList.add('hidden');
+                document.getElementById('calculator').classList.remove('hidden');
+
+                // Pre-fill setup fee if applicable
+                if (prefs.includeSetupByDefault && prefs.setupFee > 0) {
+                    document.getElementById('projectSetupFee').value = prefs.setupFee;
+                }
+
+                // Display history
+                displayHistory();
+            } else {
+                // Show setup wizard
+                document.getElementById('setupWizard').classList.remove('hidden');
+                document.getElementById('calculator').classList.add('hidden');
+            }
+        }
+
+        // Wizard navigation
+        function nextStep(stepNum) {
+            // Validate current step
+            if (stepNum === 2) {
+                const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+                if (!hourlyRate || hourlyRate <= 0) {
+                    alert('Please enter a valid hourly rate');
+                    return;
+                }
+            } else if (stepNum === 3) {
+                const overhead = parseFloat(document.getElementById('overheadPercent').value);
+                if (overhead === null || overhead === undefined || overhead < 0) {
+                    alert('Please enter a valid overhead percentage');
+                    return;
+                }
+            }
+
+            // Update step indicators
+            document.querySelectorAll('.wizard-step').forEach(step => step.classList.remove('active'));
+            document.querySelectorAll('.step-dot').forEach(dot => dot.classList.remove('active'));
+
+            document.getElementById(`step${stepNum}`).classList.add('active');
+            document.querySelector(`.step-dot[data-step="${stepNum}"]`).classList.add('active');
+        }
+
+        function prevStep(stepNum) {
+            document.querySelectorAll('.wizard-step').forEach(step => step.classList.remove('active'));
+            document.querySelectorAll('.step-dot').forEach(dot => dot.classList.remove('active'));
+
+            document.getElementById(`step${stepNum}`).classList.add('active');
+            document.querySelector(`.step-dot[data-step="${stepNum}"]`).classList.add('active');
+        }
+
+        function completeSetup() {
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+            const overheadPercent = parseFloat(document.getElementById('overheadPercent').value);
+            const setupFee = parseFloat(document.getElementById('setupFee').value) || 0;
+            const includeSetupByDefault = document.getElementById('includeSetupByDefault').checked;
+
+            if (!hourlyRate || hourlyRate <= 0) {
+                alert('Please enter a valid hourly rate');
+                return;
+            }
+
+            if (overheadPercent === null || overheadPercent === undefined || overheadPercent < 0) {
+                alert('Please enter a valid overhead percentage');
+                return;
+            }
+
+            const preferences = {
+                hourlyRate,
+                overheadPercent,
+                setupFee,
+                includeSetupByDefault
+            };
+
+            savePreferences(preferences);
+
+            // Show calculator
+            document.getElementById('setupWizard').classList.add('hidden');
+            document.getElementById('calculator').classList.remove('hidden');
+
+            // Pre-fill setup fee if applicable
+            if (includeSetupByDefault && setupFee > 0) {
+                document.getElementById('projectSetupFee').value = setupFee;
+            }
+
+            // Display history
+            displayHistory();
+        }
+
+        function editPreferences() {
+            const prefs = loadPreferences();
+            if (prefs) {
+                document.getElementById('hourlyRate').value = prefs.hourlyRate;
+                document.getElementById('overheadPercent').value = prefs.overheadPercent;
+                document.getElementById('setupFee').value = prefs.setupFee || 0;
+                document.getElementById('includeSetupByDefault').checked = prefs.includeSetupByDefault;
+            }
+
+            document.getElementById('calculator').classList.add('hidden');
+            document.getElementById('setupWizard').classList.remove('hidden');
+
+            // Go to first step
+            document.querySelectorAll('.wizard-step').forEach(step => step.classList.remove('active'));
+            document.querySelectorAll('.step-dot').forEach(dot => dot.classList.remove('active'));
+            document.getElementById('step1').classList.add('active');
+            document.querySelector('.step-dot[data-step="1"]').classList.add('active');
+        }
+
+        function calculatePricing() {
+            const prefs = loadPreferences();
+            if (!prefs) {
+                alert('Please complete the setup wizard first');
+                return;
+            }
+
+            const materialCostPerItem = parseFloat(document.getElementById('materialCost').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const projectSetupFee = parseFloat(document.getElementById('projectSetupFee').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+
+            if (materialCostPerItem < 0) {
+                alert('Please enter a valid material cost');
+                return;
+            }
+
+            if (minutes === 0) {
+                alert('Please enter the time (in minutes) to complete ONE item');
+                return;
+            }
+
+            // Calculate per-item costs
+            const totalHours = minutes / 60;
+            const laborCostPerItem = totalHours * prefs.hourlyRate;
+            const overheadCostPerItem = laborCostPerItem * (prefs.overheadPercent / 100);
+            const setupFeePerItem = projectSetupFee / quantity; // Spread setup fee across all items
+            const costPerItem = materialCostPerItem + laborCostPerItem + overheadCostPerItem + setupFeePerItem;
+
+            // Display per-item breakdown
+            document.getElementById('resultMaterial').textContent = `$${materialCostPerItem.toFixed(2)}`;
+            document.getElementById('resultLabor').textContent = `$${laborCostPerItem.toFixed(2)}`;
+            document.getElementById('resultOverhead').textContent = `$${overheadCostPerItem.toFixed(2)}`;
+
+            if (projectSetupFee > 0) {
+                document.getElementById('resultSetupFee').textContent = `$${setupFeePerItem.toFixed(2)}`;
+                document.getElementById('setupFeeLine').style.display = 'flex';
+            } else {
+                document.getElementById('setupFeeLine').style.display = 'none';
+            }
+
+            document.getElementById('resultTotal').textContent = `$${costPerItem.toFixed(2)}`;
+
+            // Show quantity total if more than 1
+            const quantityTotalSection = document.getElementById('quantityTotalSection');
+            if (quantity > 1) {
+                const totalAllItems = costPerItem * quantity;
+                document.getElementById('quantityAmount').textContent = quantity;
+                document.getElementById('resultTotalAllItems').textContent = `$${totalAllItems.toFixed(2)}`;
+                quantityTotalSection.style.display = 'flex';
+            } else {
+                quantityTotalSection.style.display = 'none';
+            }
+
+
+            // Calculate bulk discount
+            const bulkDiscountPercent = calculateBulkDiscount(quantity);
+            const bulkDiscountMultiplier = 1 - (bulkDiscountPercent / 100);
+
+            // Calculate pricing options (per item with bulk discount applied)
+            let price30PerItem = costPerItem * 1.30 * bulkDiscountMultiplier;
+            let price50PerItem = costPerItem * 1.50 * bulkDiscountMultiplier;
+            let price75PerItem = costPerItem * 1.75 * bulkDiscountMultiplier;
+            let price100PerItem = costPerItem * 2.00 * bulkDiscountMultiplier;
+
+            // Add discount badge if applicable
+            const discountBadge = bulkDiscountPercent > 0 ? `<span class="discount-badge">${bulkDiscountPercent}% off</span>` : '';
+
+            document.getElementById('price30').innerHTML = `$${price30PerItem.toFixed(2)}${discountBadge}`;
+            document.getElementById('price50').innerHTML = `$${price50PerItem.toFixed(2)}${discountBadge}`;
+            document.getElementById('price75').innerHTML = `$${price75PerItem.toFixed(2)}${discountBadge}`;
+            document.getElementById('price100').innerHTML = `$${price100PerItem.toFixed(2)}${discountBadge}`;
+
+            // Show bulk totals if quantity > 1
+            if (quantity > 1) {
+                document.getElementById('price30Total').textContent = `Total: $${(price30PerItem * quantity).toFixed(2)}`;
+                document.getElementById('price50Total').textContent = `Total: $${(price50PerItem * quantity).toFixed(2)}`;
+                document.getElementById('price75Total').textContent = `Total: $${(price75PerItem * quantity).toFixed(2)}`;
+                document.getElementById('price100Total').textContent = `Total: $${(price100PerItem * quantity).toFixed(2)}`;
+
+                document.getElementById('price30Total').style.display = 'block';
+                document.getElementById('price50Total').style.display = 'block';
+                document.getElementById('price75Total').style.display = 'block';
+                document.getElementById('price100Total').style.display = 'block';
+            } else {
+                document.getElementById('price30Total').style.display = 'none';
+                document.getElementById('price50Total').style.display = 'none';
+                document.getElementById('price75Total').style.display = 'none';
+                document.getElementById('price100Total').style.display = 'none';
+            }
+
+            // Store calculation for quote generation
+            currentCalculation = {
+                materialCost: materialCostPerItem,
+                laborCost: laborCostPerItem,
+                overheadCost: overheadCostPerItem,
+                setupFee: projectSetupFee,
+                costPerItem: costPerItem,
+                quantity: quantity
+            };
+
+            // Create visual profit breakdown (start with 50% markup, user can click tiers to update)
+            window.currentChartData = {
+                materialCost: materialCostPerItem,
+                laborCost: laborCostPerItem,
+                overheadCost: overheadCostPerItem,
+                setupFee: setupFeePerItem,
+                costPerItem: costPerItem
+            };
+            updateProfitChart(50); // Default to 50%
+
+            // Add to history
+            addToHistory(materialCostPerItem, minutes, price50PerItem, quantity);
+
+            // Show results
+            document.getElementById('resultsSection').classList.add('active');
+
+            // Smooth scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProfitChart(markupPercent) {
+            if (!window.currentChartData) return;
+
+            const { materialCost, laborCost, overheadCost, setupFee, costPerItem } = window.currentChartData;
+            const profit = costPerItem * (markupPercent / 100);
+            const total = costPerItem + profit;
+
+            const materialPercent = (materialCost / total) * 100;
+            const laborPercent = (laborCost / total) * 100;
+            const overheadPercent = (overheadCost / total) * 100;
+            const setupPercent = (setupFee / total) * 100;
+            const profitPercent = (profit / total) * 100;
+
+            // Update chart title
+            const chartTitle = document.querySelector('.profit-chart-title');
+            if (chartTitle) {
+                chartTitle.textContent = `Visual Cost & Profit Breakdown (at ${markupPercent}% markup)`;
+            }
+
+            const profitBar = document.getElementById('profitBar');
+            profitBar.innerHTML = `
+                ${materialPercent > 3 ? `<div class="chart-segment materials" style="width: ${materialPercent}%">${materialPercent > 8 ? '$' + materialCost.toFixed(2) : ''}</div>` : ''}
+                ${laborPercent > 3 ? `<div class="chart-segment labor" style="width: ${laborPercent}%">${laborPercent > 8 ? '$' + laborCost.toFixed(2) : ''}</div>` : ''}
+                ${overheadPercent > 3 ? `<div class="chart-segment overhead" style="width: ${overheadPercent}%">${overheadPercent > 8 ? '$' + overheadCost.toFixed(2) : ''}</div>` : ''}
+                ${setupPercent > 3 ? `<div class="chart-segment setup" style="width: ${setupPercent}%">${setupPercent > 8 ? '$' + setupFee.toFixed(2) : ''}</div>` : ''}
+                ${profitPercent > 3 ? `<div class="chart-segment profit" style="width: ${profitPercent}%">${profitPercent > 8 ? '$' + profit.toFixed(2) : ''}</div>` : ''}
+            `;
+
+            const chartLegend = document.getElementById('chartLegend');
+            chartLegend.innerHTML = `
+                ${materialPercent > 0 ? `<div class="legend-item">
+                    <div class="legend-color materials"></div>
+                    <span class="legend-label">Materials</span>
+                    <span class="legend-value">$${materialCost.toFixed(2)}</span>
+                </div>` : ''}
+                ${laborPercent > 0 ? `<div class="legend-item">
+                    <div class="legend-color labor"></div>
+                    <span class="legend-label">Labor</span>
+                    <span class="legend-value">$${laborCost.toFixed(2)}</span>
+                </div>` : ''}
+                ${overheadPercent > 0 ? `<div class="legend-item">
+                    <div class="legend-color overhead"></div>
+                    <span class="legend-label">Overhead</span>
+                    <span class="legend-value">$${overheadCost.toFixed(2)}</span>
+                </div>` : ''}
+                ${setupPercent > 0 ? `<div class="legend-item">
+                    <div class="legend-color setup"></div>
+                    <span class="legend-label">Setup</span>
+                    <span class="legend-value">$${setupFee.toFixed(2)}</span>
+                </div>` : ''}
+                <div class="legend-item">
+                    <div class="legend-color profit"></div>
+                    <span class="legend-label">Profit (${markupPercent}%)</span>
+                    <span class="legend-value">$${profit.toFixed(2)}</span>
+                </div>
+            `;
+        }
+
+        function resetCalculator() {
+            document.getElementById('materialCost').value = '';
+            document.getElementById('minutes').value = '';
+            document.getElementById('enableBulkDiscount').checked = false;
+            toggleBulkDiscount();
+
+            const prefs = loadPreferences();
+            if (prefs && prefs.includeSetupByDefault && prefs.setupFee > 0) {
+                document.getElementById('projectSetupFee').value = prefs.setupFee;
+            } else {
+                document.getElementById('projectSetupFee').value = '';
+            }
+
+            document.getElementById('resultsSection').classList.remove('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Calculate machine depreciation
+        function calculateDepreciation() {
+            const laserCost = parseFloat(document.getElementById('laserCost').value) || 0;
+            const laserLifeHours = parseFloat(document.getElementById('laserLifeHours').value) || 0;
+
+            if (laserCost > 0 && laserLifeHours > 0) {
+                const costPerHour = laserCost / laserLifeHours;
+                document.getElementById('costPerHour').textContent = `$${costPerHour.toFixed(2)}`;
+                document.getElementById('depreciationResult').style.display = 'block';
+            } else {
+                document.getElementById('depreciationResult').style.display = 'none';
+            }
+        }
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
+</html>
