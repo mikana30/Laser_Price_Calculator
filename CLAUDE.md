@@ -4,10 +4,11 @@
 Single-file browser-based pricing calculator for laser engraving businesses. Helps owners price products based on material costs, labor, overhead, and desired profit margins. Generates professional .docx client quotes. Includes a customer database with linked quote tracking, autocomplete, and JSON import/export.
 
 ## File Structure
-- `laser-pricing-calculator.html` — The entire application (HTML + CSS + JS in one file, ~3,600 lines)
-  - Lines 1-1503: CSS styles (dark theme, amber accents, responsive, autocomplete, customer panel, data manager)
-  - Lines 1505-2063: HTML markup (wizard, calculator, results, quote modal, customer panel modal, data manager modal)
-  - Lines 2064-3589: JavaScript (calculations, localStorage persistence, docx generation, customer/quote CRUD, autocomplete, import/export)
+- `laser-pricing-calculator.html` — The entire application (HTML + CSS + JS in one file, ~3,630 lines)
+  - Lines 1-1509: CSS styles (dark theme, amber accents, responsive, autocomplete, customer panel, data manager)
+  - Lines 1511-2069: HTML markup (wizard, calculator, results, quote modal, customer panel modal, data manager modal)
+  - Lines 2070-3627: JavaScript (calculations, localStorage persistence, docx generation, customer/quote CRUD, autocomplete, import/export)
+- `.gitignore` — Excludes OS junk, editor/IDE folders, node_modules, .env files
 
 ## Tech Stack
 - Vanilla HTML/CSS/JS — no build tools or frameworks
@@ -16,7 +17,7 @@ Single-file browser-based pricing calculator for laser engraving businesses. Hel
 - No backend
 
 ## localStorage Keys
-- `laserPricingPreferences` — Wizard settings (hourlyRate, overheadPercent, setupFee, includeSetupByDefault) + business info (businessName, businessEmail, businessPhone, businessAddress)
+- `laserPricingPreferences` — Wizard settings (hourlyRate, overheadPercent, setupFee, includeSetupByDefault) + business info (businessName, businessEmail, businessPhone, businessAddress, salesTaxRate)
 - `laserPricingHistory` — Array of up to 5 recent calculation entries
 - `lpc_customers` — Array of customer objects `{ id, name, company, email, phone, address, notes, createdAt, updatedAt }`
 - `lpc_quotes` — Array of quote objects `{ id, quoteNumber: "Q-00001", customerId, customerName, projectDescription, materialCost, minutes, setupFee, quantity, hourlyRate, overheadPercent, costPerItem, markupTier, pricePerItem, bulkDiscountPercent, subtotal, salesTaxRate, salesTax, totalPrice, status: "draft"|"sent"|"accepted"|"declined", createdAt, updatedAt }`
@@ -38,7 +39,7 @@ Single-file browser-based pricing calculator for laser engraving businesses. Hel
 - **Customer CRUD**: `addCustomer`, `updateCustomer`, `deleteCustomer`, `getCustomerById`, `searchCustomers`
 - **Quote CRUD**: `addQuote`, `getQuotesForCustomer`, `updateQuoteStatus`
 - **ID Management**: `getNextCustomerId`, `getNextQuoteId`, `formatQuoteNumber`
-- **Utilities**: `escapeHtml`, `getStorageUsage`
+- **Utilities**: `escapeHtml` (null-safe), `getStorageUsage`
 - **Migration**: `migrateBusinessInfo` — moves old separate business info keys into preferences object
 - **Autocomplete**: `initAutocomplete`, `renderAutocomplete`, `highlightMatch`, `closeAutocomplete`
 - **Customer Panel**: `openCustomerPanel`, `closeCustomerPanel`, `showCustomerList`, `filterCustomerList`, `renderCustomerList`, `viewCustomer`, `editCustomerForm`, `saveCustomerEdit`, `deleteCurrentCustomer`
@@ -48,11 +49,22 @@ Single-file browser-based pricing calculator for laser engraving businesses. Hel
 - All monetary inputs use `$` prefix styling via `.input-with-prefix` / `.input-prefix`
 - CSS uses custom properties defined in `:root` (--coal, --slate, --amber, etc.)
 - UI state toggling uses `.hidden`, `.active`, `.open` CSS classes
-- Global `currentCalculation` object stores last calc results for quote generation
+- Global `currentCalculation` object stores last calc results for quote generation (includes `minutes`)
+- All data is stored in browser localStorage only — no data files on disk, nothing in the repo
 - Global `window.currentChartData` stores data for the interactive profit chart
 - Global `selectedCustomerId` tracks customer linked to current quote session
 - Quote numbers are zero-padded sequential: `Q-00001`, `Q-00002`, etc.
 - Quote status badges are color-coded: draft=silver, sent=blue, accepted=green, declined=red
+
+## Security Notes
+- All user-facing HTML output uses `escapeHtml()` for XSS prevention
+- Imported data IDs are sanitized with `parseInt()`, statuses validated against whitelist
+- `searchCustomers` uses null guards for resilience against malformed imported data
+- `migrateBusinessInfo` only deletes old keys after confirmed successful migration
+
+## Git / Repository
+- Remote: `https://github.com/mikana30/Laser_Price_Calculator.git` (branch: master)
+- No user data in repo — all persistence is browser localStorage only
 
 ## Other Projects on D:\
 - `FormFiller-master/` — Separate .NET 8 WPF app (police form auto-filler). Unrelated to this project.
