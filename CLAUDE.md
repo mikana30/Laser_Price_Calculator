@@ -11,7 +11,7 @@ Single-file browser-based pricing calculator for laser engraving businesses. Hel
 
 ## Tech Stack
 - Vanilla HTML/CSS/JS — no build tools or frameworks
-- CDN dependencies: docx.js v7.8.2 (Word doc generation), FileSaver.js v2.0.5
+- Local vendor libs in `lib/`: docx.js v7.8.2 (Word doc generation), FileSaver.js v2.0.5
 - localStorage for preferences, history, and business info persistence
 - No backend
 
