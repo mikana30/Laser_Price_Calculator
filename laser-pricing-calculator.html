@@ -759,6 +759,12 @@
             border-radius: 3px;
         }
 
+        .legend-color.materials { background: var(--red); }
+        .legend-color.labor { background: var(--blue); }
+        .legend-color.overhead { background: var(--silver); }
+        .legend-color.setup { background: var(--purple); }
+        .legend-color.profit { background: var(--green); }
+
         .legend-label {
             color: var(--silver);
         }
@@ -1128,6 +1134,378 @@
             font-weight: 600;
             margin-left: 8px;
         }
+
+        /* Header action buttons */
+        .header-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .header-actions button {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* Autocomplete */
+        .autocomplete-wrapper {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1001;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .autocomplete-dropdown.open {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--white);
+            transition: background 0.2s ease;
+            border-bottom: 1px solid var(--steel);
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.highlighted {
+            background: rgba(255, 159, 67, 0.15);
+        }
+
+        .autocomplete-item .ac-name {
+            font-weight: 600;
+        }
+
+        .autocomplete-item .ac-company {
+            color: var(--silver);
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .autocomplete-item .ac-match {
+            color: var(--amber);
+            font-weight: 700;
+        }
+
+        .autocomplete-item.ac-new {
+            color: var(--amber);
+            font-style: italic;
+            border-top: 1px solid var(--steel);
+        }
+
+        /* Customer Panel Modal */
+        .customer-panel {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .customer-panel.open {
+            display: flex;
+        }
+
+        .customer-panel-content {
+            background: var(--slate);
+            border: 1px solid var(--steel);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .customer-search {
+            margin-bottom: 20px;
+        }
+
+        .customer-search input {
+            width: 100%;
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            color: var(--white);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .customer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .customer-list-item {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .customer-list-item:hover {
+            border-color: var(--amber);
+            background: rgba(255, 159, 67, 0.05);
+        }
+
+        .customer-list-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .customer-list-company {
+            color: var(--silver);
+            font-size: 12px;
+        }
+
+        .customer-list-quotes {
+            color: var(--silver);
+            font-size: 12px;
+        }
+
+        /* Customer detail view */
+        .customer-detail {
+            display: none;
+        }
+
+        .customer-detail.active {
+            display: block;
+        }
+
+        .customer-detail-info {
+            background: var(--coal);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .customer-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+        .customer-detail-label {
+            color: var(--silver);
+        }
+
+        .customer-detail-value {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .customer-detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .customer-detail-actions button {
+            flex: 1;
+        }
+
+        /* Quote status badges */
+        .quote-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .quote-status.draft { background: var(--silver); color: var(--coal); }
+        .quote-status.sent { background: var(--blue); color: var(--white); }
+        .quote-status.accepted { background: var(--green); color: var(--white); }
+        .quote-status.declined { background: var(--red); color: var(--white); }
+
+        .quote-history-item {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quote-history-item:hover {
+            border-color: var(--steel);
+        }
+
+        .quote-history-info {
+            flex: 1;
+        }
+
+        .quote-history-number {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .quote-history-desc {
+            color: var(--silver);
+            font-size: 12px;
+        }
+
+        .quote-history-price {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--amber);
+            font-size: 14px;
+        }
+
+        .quote-status-select {
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            color: var(--white);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* Data Manager Modal */
+        .data-manager {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .data-manager.open {
+            display: flex;
+        }
+
+        .data-manager-content {
+            background: var(--slate);
+            border: 1px solid var(--steel);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .storage-bar {
+            background: var(--coal);
+            border-radius: 4px;
+            height: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .storage-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--green);
+            transition: width 0.3s ease;
+        }
+
+        .storage-bar-fill.warning { background: var(--amber); }
+        .storage-bar-fill.danger { background: var(--red); }
+
+        .storage-info {
+            font-size: 12px;
+            color: var(--silver);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .data-manager-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Customer edit form */
+        .customer-edit-form {
+            display: none;
+        }
+
+        .customer-edit-form.active {
+            display: block;
+        }
+
+        .customer-edit-form .input-group {
+            margin-bottom: 15px;
+        }
+
+        .customer-edit-form input[type="text"],
+        .customer-edit-form input[type="email"],
+        .customer-edit-form input[type="tel"] {
+            width: 100%;
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            color: var(--white);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .customer-notes textarea {
+            width: 100%;
+            background: var(--coal);
+            border: 1px solid var(--steel);
+            color: var(--white);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--silver);
+            font-style: italic;
+            padding: 30px 20px;
+        }
     </style>
 </head>
 <body>
@@ -1135,6 +1513,10 @@
         <div class="header">
             <h1>Laser Engraving Pricing Calculator</h1>
             <p class="subtitle">Professional pricing for your craft</p>
+            <div class="header-actions" id="headerActions" style="display: none;">
+                <button class="secondary small" onclick="openCustomerPanel()">Customers</button>
+                <button class="secondary small" onclick="openDataManager()">Import/Export</button>
+            </div>
         </div>
 
         <!-- Setup Wizard -->
@@ -1510,7 +1892,7 @@
 
                     <div style="display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
                         <button onclick="generateClientQuote()" style="flex: 1; min-width: 200px;">📄 Generate Client Quote</button>
-                        <button onclick="copyQuote()" class="secondary" style="flex: 1;">Copy Internal Notes</button>
+                        <button onclick="copyQuote(this)" class="secondary" style="flex: 1;">Copy Internal Notes</button>
                         <button onclick="window.print()" class="secondary">Print</button>
                         <button onclick="resetCalculator()" class="secondary">New Calculation</button>
                     </div>
@@ -1562,7 +1944,10 @@
 
                 <div class="input-group">
                     <label class="label">Client Name</label>
-                    <input type="text" id="clientName" placeholder="Client or Company Name">
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="clientName" placeholder="Client or Company Name" autocomplete="off">
+                        <div class="autocomplete-dropdown" id="clientNameDropdown"></div>
+                    </div>
                 </div>
 
                 <div class="input-group">
@@ -1603,10 +1988,92 @@
         </div>
     </div>
 
+    <!-- Customer Panel Modal -->
+    <div id="customerPanel" class="customer-panel">
+        <div class="customer-panel-content">
+            <div class="quote-modal-header">
+                <h2 id="customerPanelTitle">Customers</h2>
+                <span class="quote-modal-close" onclick="closeCustomerPanel()">&times;</span>
+            </div>
+
+            <!-- Customer List View -->
+            <div id="customerListView">
+                <div class="customer-search">
+                    <input type="text" id="customerSearchInput" placeholder="Search customers..." oninput="filterCustomerList()">
+                </div>
+                <div class="customer-list" id="customerListContainer">
+                    <div class="empty-state">No customers yet. Customers are created automatically when you generate quotes.</div>
+                </div>
+            </div>
+
+            <!-- Customer Detail View -->
+            <div id="customerDetailView" class="customer-detail">
+                <button class="secondary small" onclick="showCustomerList()" style="margin-bottom: 15px; width: auto;">&larr; Back to list</button>
+                <div class="customer-detail-info" id="customerDetailInfo"></div>
+                <div class="customer-detail-actions">
+                    <button class="secondary small" onclick="editCustomerForm()">Edit</button>
+                    <button class="secondary small" onclick="deleteCurrentCustomer()" style="border-color: var(--red); color: var(--red);">Delete</button>
+                </div>
+                <h3 style="font-size: 14px; color: var(--silver); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Quote History</h3>
+                <div id="customerQuoteHistory"></div>
+            </div>
+
+            <!-- Customer Edit View -->
+            <div id="customerEditView" class="customer-edit-form">
+                <button class="secondary small" onclick="cancelCustomerEdit()" style="margin-bottom: 15px; width: auto;">&larr; Cancel</button>
+                <div class="input-group">
+                    <label class="label">Name</label>
+                    <input type="text" id="editCustomerName">
+                </div>
+                <div class="input-group">
+                    <label class="label">Company</label>
+                    <input type="text" id="editCustomerCompany">
+                </div>
+                <div class="input-group">
+                    <label class="label">Email</label>
+                    <input type="email" id="editCustomerEmail">
+                </div>
+                <div class="input-group">
+                    <label class="label">Phone</label>
+                    <input type="tel" id="editCustomerPhone">
+                </div>
+                <div class="input-group">
+                    <label class="label">Address</label>
+                    <input type="text" id="editCustomerAddress">
+                </div>
+                <div class="input-group customer-notes">
+                    <label class="label">Notes</label>
+                    <textarea id="editCustomerNotes"></textarea>
+                </div>
+                <button onclick="saveCustomerEdit()">Save Customer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Manager Modal -->
+    <div id="dataManager" class="data-manager">
+        <div class="data-manager-content">
+            <div class="quote-modal-header">
+                <h2>Data Manager</h2>
+                <span class="quote-modal-close" onclick="closeDataManager()">&times;</span>
+            </div>
+            <div class="storage-bar"><div class="storage-bar-fill" id="storageBarFill"></div></div>
+            <div class="storage-info" id="storageInfo">Calculating storage usage...</div>
+            <div class="data-manager-actions">
+                <button onclick="exportAllData()">Export All Data (JSON)</button>
+                <button class="secondary" onclick="triggerImport()">Import Data (JSON)</button>
+                <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="importData(event)">
+            </div>
+        </div>
+    </div>
+
     <script>
         // Storage keys
         const STORAGE_KEY = 'laserPricingPreferences';
         const HISTORY_KEY = 'laserPricingHistory';
+        const CUSTOMERS_KEY = 'lpc_customers';
+        const QUOTES_KEY = 'lpc_quotes';
+        const META_KEY = 'lpc_meta';
 
         // Load preferences from localStorage
         function loadPreferences() {
@@ -1634,6 +2101,206 @@
         // Save history to localStorage
         function saveHistory(history) {
             localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        }
+
+        // ============ Utility Functions ============
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(String(str)));
+            return div.innerHTML;
+        }
+
+        function getStorageUsage() {
+            let total = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    total += localStorage[key].length + key.length;
+                }
+            }
+            return total * 2; // UTF-16 = 2 bytes per char
+        }
+
+        // ============ Meta / ID Management ============
+
+        function loadMeta() {
+            const stored = localStorage.getItem(META_KEY);
+            if (stored) return JSON.parse(stored);
+            return { nextCustomerId: 1, nextQuoteId: 1, dataVersion: 1 };
+        }
+
+        function saveMeta(meta) {
+            localStorage.setItem(META_KEY, JSON.stringify(meta));
+        }
+
+        function getNextCustomerId() {
+            const meta = loadMeta();
+            const id = meta.nextCustomerId;
+            meta.nextCustomerId = id + 1;
+            saveMeta(meta);
+            return id;
+        }
+
+        function getNextQuoteId() {
+            const meta = loadMeta();
+            const id = meta.nextQuoteId;
+            meta.nextQuoteId = id + 1;
+            saveMeta(meta);
+            return id;
+        }
+
+        function formatQuoteNumber(id) {
+            return 'Q-' + String(id).padStart(5, '0');
+        }
+
+        // ============ Customer CRUD ============
+
+        function loadCustomers() {
+            const stored = localStorage.getItem(CUSTOMERS_KEY);
+            if (stored) return JSON.parse(stored);
+            return [];
+        }
+
+        function saveCustomers(customers) {
+            localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(customers));
+        }
+
+        function addCustomer(data) {
+            const customers = loadCustomers();
+            const now = new Date().toISOString();
+            const customer = {
+                id: getNextCustomerId(),
+                name: data.name || '',
+                company: data.company || '',
+                email: data.email || '',
+                phone: data.phone || '',
+                address: data.address || '',
+                notes: data.notes || '',
+                createdAt: now,
+                updatedAt: now
+            };
+            customers.push(customer);
+            saveCustomers(customers);
+            return customer;
+        }
+
+        function updateCustomer(id, data) {
+            const customers = loadCustomers();
+            const idx = customers.findIndex(c => c.id === id);
+            if (idx === -1) return null;
+            Object.assign(customers[idx], data, { updatedAt: new Date().toISOString() });
+            saveCustomers(customers);
+            return customers[idx];
+        }
+
+        function deleteCustomer(id) {
+            const customers = loadCustomers();
+            const filtered = customers.filter(c => c.id !== id);
+            saveCustomers(filtered);
+        }
+
+        function getCustomerById(id) {
+            const customers = loadCustomers();
+            return customers.find(c => c.id === id) || null;
+        }
+
+        function searchCustomers(query) {
+            if (!query || query.trim().length === 0) return [];
+            const q = query.toLowerCase().trim();
+            const customers = loadCustomers();
+            return customers
+                .filter(c => (c.name || '').toLowerCase().includes(q) || (c.company || '').toLowerCase().includes(q))
+                .slice(0, 10);
+        }
+
+        // ============ Quote CRUD ============
+
+        function loadQuotes() {
+            const stored = localStorage.getItem(QUOTES_KEY);
+            if (stored) return JSON.parse(stored);
+            return [];
+        }
+
+        function saveQuotes(quotes) {
+            localStorage.setItem(QUOTES_KEY, JSON.stringify(quotes));
+        }
+
+        function addQuote(data) {
+            const quotes = loadQuotes();
+            const now = new Date().toISOString();
+            const id = getNextQuoteId();
+            const quote = {
+                id: id,
+                quoteNumber: formatQuoteNumber(id),
+                customerId: data.customerId,
+                customerName: data.customerName || '',
+                projectDescription: data.projectDescription || '',
+                materialCost: data.materialCost || 0,
+                minutes: data.minutes || 0,
+                setupFee: data.setupFee || 0,
+                quantity: data.quantity || 1,
+                hourlyRate: data.hourlyRate || 0,
+                overheadPercent: data.overheadPercent || 0,
+                costPerItem: data.costPerItem || 0,
+                markupTier: data.markupTier || 50,
+                pricePerItem: data.pricePerItem || 0,
+                bulkDiscountPercent: data.bulkDiscountPercent || 0,
+                subtotal: data.subtotal || 0,
+                salesTaxRate: data.salesTaxRate || 0,
+                salesTax: data.salesTax || 0,
+                totalPrice: data.totalPrice || 0,
+                status: data.status || 'draft',
+                createdAt: now,
+                updatedAt: now
+            };
+            quotes.push(quote);
+            saveQuotes(quotes);
+            return quote;
+        }
+
+        function getQuotesForCustomer(customerId) {
+            const quotes = loadQuotes();
+            return quotes
+                .filter(q => q.customerId === customerId)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
+
+        function updateQuoteStatus(quoteId, status) {
+            const quotes = loadQuotes();
+            const idx = quotes.findIndex(q => q.id === quoteId);
+            if (idx === -1) return null;
+            quotes[idx].status = status;
+            quotes[idx].updatedAt = new Date().toISOString();
+            saveQuotes(quotes);
+            return quotes[idx];
+        }
+
+        // ============ Business Info Migration ============
+
+        function migrateBusinessInfo() {
+            const oldName = localStorage.getItem('businessName');
+            const oldEmail = localStorage.getItem('businessEmail');
+            const oldPhone = localStorage.getItem('businessPhone');
+            const oldAddress = localStorage.getItem('businessAddress');
+
+            if (oldName || oldEmail || oldPhone || oldAddress) {
+                const prefs = loadPreferences();
+                if (prefs) {
+                    if (!prefs.businessName) prefs.businessName = oldName || '';
+                    if (!prefs.businessEmail) prefs.businessEmail = oldEmail || '';
+                    if (!prefs.businessPhone) prefs.businessPhone = oldPhone || '';
+                    if (!prefs.businessAddress) prefs.businessAddress = oldAddress || '';
+                    savePreferences(prefs);
+                    // Only remove old keys after successful migration
+                    localStorage.removeItem('businessName');
+                    localStorage.removeItem('businessEmail');
+                    localStorage.removeItem('businessPhone');
+                    localStorage.removeItem('businessAddress');
+                }
+                // If prefs is null (wizard never completed), leave old keys intact
+                // so they can be migrated once the wizard is completed
+            }
         }
 
         // Add calculation to history
@@ -1768,26 +2435,41 @@
         // Store calculation results for quote generation
         let currentCalculation = {};
         let selectedTier = 50; // Default to standard 50%
+        let selectedCustomerId = null;
 
         // Generate client quote modal
         function generateClientQuote() {
             const modal = document.getElementById('quoteModal');
             modal.style.display = 'flex';
+            selectedCustomerId = null;
 
-            // Load saved business info if available
-            const savedBusinessName = localStorage.getItem('businessName');
-            const savedBusinessEmail = localStorage.getItem('businessEmail');
-            const savedBusinessPhone = localStorage.getItem('businessPhone');
-            const savedBusinessAddress = localStorage.getItem('businessAddress');
+            // Clear client-specific fields
+            document.getElementById('clientName').value = '';
+            document.getElementById('projectDescription').value = '';
+            document.getElementById('salesTaxRate').value = '';
 
-            if (savedBusinessName) document.getElementById('businessName').value = savedBusinessName;
-            if (savedBusinessEmail) document.getElementById('businessEmail').value = savedBusinessEmail;
-            if (savedBusinessPhone) document.getElementById('businessPhone').value = savedBusinessPhone;
-            if (savedBusinessAddress) document.getElementById('businessAddress').value = savedBusinessAddress;
+            // Reset tier selection to default (50%)
+            selectTier(50);
+
+            // Close any stale autocomplete
+            closeAutocomplete();
+            clearTimeout(autocompleteTimeout);
+
+            // Load saved business info from preferences
+            const prefs = loadPreferences();
+            if (prefs) {
+                if (prefs.businessName) document.getElementById('businessName').value = prefs.businessName;
+                if (prefs.businessEmail) document.getElementById('businessEmail').value = prefs.businessEmail;
+                if (prefs.businessPhone) document.getElementById('businessPhone').value = prefs.businessPhone;
+                if (prefs.businessAddress) document.getElementById('businessAddress').value = prefs.businessAddress;
+                if (prefs.salesTaxRate) document.getElementById('salesTaxRate').value = prefs.salesTaxRate;
+            }
         }
 
         function closeQuoteModal() {
             document.getElementById('quoteModal').style.display = 'none';
+            closeAutocomplete();
+            clearTimeout(autocompleteTimeout);
         }
 
         function selectTier(tier) {
@@ -1834,11 +2516,14 @@
                 return;
             }
 
-            // Save business info for future use
-            localStorage.setItem('businessName', businessName);
-            localStorage.setItem('businessEmail', businessEmail);
-            localStorage.setItem('businessPhone', businessPhone);
-            if (businessAddress) localStorage.setItem('businessAddress', businessAddress);
+            // Save business info to preferences
+            const prefs = loadPreferences() || {};
+            prefs.businessName = businessName;
+            prefs.businessEmail = businessEmail;
+            prefs.businessPhone = businessPhone;
+            prefs.businessAddress = businessAddress;
+            if (salesTaxRate > 0) prefs.salesTaxRate = salesTaxRate;
+            savePreferences(prefs);
 
             const calc = currentCalculation;
             let markup;
@@ -1860,7 +2545,7 @@
             const salesTax = subtotal * (salesTaxRate / 100);
             const totalPrice = subtotal + salesTax;
             const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            const quoteNumber = `Q-${Date.now()}`;
+            const quoteNumber = formatQuoteNumber(loadMeta().nextQuoteId);
 
             // Line item description
             const lineItemDesc = projectDescription || "Laser Engraving Service";
@@ -2130,6 +2815,37 @@
                 const blob = await Packer.toBlob(doc);
                 saveAs(blob, `Quote_${clientName.replace(/\s+/g, '_')}_${Date.now()}.docx`);
 
+                // Auto-create customer if none selected
+                if (!selectedCustomerId) {
+                    const existingCustomer = addCustomer({ name: clientName });
+                    selectedCustomerId = existingCustomer.id;
+                }
+
+                // Save quote snapshot
+                const savedPrefs = loadPreferences() || {};
+                addQuote({
+                    customerId: selectedCustomerId,
+                    customerName: clientName,
+                    projectDescription: projectDescription || 'Laser Engraving Service',
+                    materialCost: calc.materialCost,
+                    minutes: calc.minutes || 0,
+                    setupFee: calc.setupFee,
+                    quantity: calc.quantity,
+                    hourlyRate: savedPrefs.hourlyRate || 0,
+                    overheadPercent: savedPrefs.overheadPercent || 0,
+                    costPerItem: calc.costPerItem,
+                    markupTier: selectedTier,
+                    pricePerItem: pricePerItem,
+                    bulkDiscountPercent: bulkDiscountPercent,
+                    subtotal: subtotal,
+                    salesTaxRate: salesTaxRate,
+                    salesTax: salesTax,
+                    totalPrice: totalPrice,
+                    status: 'draft'
+                });
+
+                selectedCustomerId = null;
+
                 // Show success feedback
                 feedback.style.backgroundColor = 'var(--green)';
                 feedback.textContent = '✓ Quote document generated successfully!';
@@ -2149,7 +2865,7 @@
         }
 
         // Copy internal quote
-        function copyQuote() {
+        function copyQuote(btn) {
             const calc = currentCalculation;
             const setupLine = calc.setupFee > 0 ? `Setup: $${(calc.setupFee / calc.quantity).toFixed(2)}\n` : '';
             const quantityInfo = calc.quantity > 1 ? ` (×${calc.quantity})` : '';
@@ -2167,7 +2883,6 @@ PRICING OPTIONS:
 100% markup: $${(calc.costPerItem * 2.00).toFixed(2)}`;
 
             navigator.clipboard.writeText(quote).then(() => {
-                const btn = event.target;
                 const originalText = btn.textContent;
                 btn.textContent = 'Copied!';
                 btn.style.backgroundColor = 'var(--green)';
@@ -2180,13 +2895,409 @@ PRICING OPTIONS:
             });
         }
 
+        // ============ Autocomplete ============
+
+        let autocompleteTimeout = null;
+        let highlightedIndex = -1;
+
+        function initAutocomplete() {
+            const input = document.getElementById('clientName');
+            const dropdown = document.getElementById('clientNameDropdown');
+
+            input.addEventListener('input', function() {
+                clearTimeout(autocompleteTimeout);
+                autocompleteTimeout = setTimeout(() => {
+                    const query = input.value.trim();
+                    if (query.length < 1) {
+                        closeAutocomplete();
+                        return;
+                    }
+                    const results = searchCustomers(query);
+                    renderAutocomplete(results, query);
+                }, 150);
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (!dropdown.classList.contains('open')) return;
+                const items = dropdown.querySelectorAll('.autocomplete-item');
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+                    updateHighlight(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    highlightedIndex = Math.max(highlightedIndex - 1, 0);
+                    updateHighlight(items);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (highlightedIndex >= 0 && items[highlightedIndex]) {
+                        items[highlightedIndex].click();
+                    }
+                } else if (e.key === 'Escape') {
+                    closeAutocomplete();
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.autocomplete-wrapper')) {
+                    closeAutocomplete();
+                }
+            });
+        }
+
+        function renderAutocomplete(results, query) {
+            const dropdown = document.getElementById('clientNameDropdown');
+            highlightedIndex = -1;
+
+            if (results.length === 0 && query.length > 0) {
+                dropdown.innerHTML = '<div class="autocomplete-item ac-new" data-action="new">+ Add &quot;' + escapeHtml(query) + '&quot; as new customer</div>';
+                dropdown.classList.add('open');
+                attachAutocompleteListeners();
+                return;
+            }
+
+            let html = results.map(c => {
+                const nameHighlighted = highlightMatch(c.name || '', query);
+                const companyPart = c.company ? '<span class="ac-company">' + highlightMatch(c.company, query) + '</span>' : '';
+                const safeId = parseInt(c.id) || 0;
+                return '<div class="autocomplete-item" data-customer-id="' + safeId + '"><span class="ac-name">' + nameHighlighted + '</span>' + companyPart + '</div>';
+            }).join('');
+
+            html += '<div class="autocomplete-item ac-new" data-action="new">+ Add as new customer</div>';
+            dropdown.innerHTML = html;
+            dropdown.classList.add('open');
+            attachAutocompleteListeners();
+        }
+
+        function highlightMatch(text, query) {
+            const escaped = escapeHtml(text);
+            const escapedQuery = escapeHtml(query);
+            const q = escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp('(' + q + ')', 'gi');
+            return escaped.replace(regex, '<span class="ac-match">$1</span>');
+        }
+
+        function attachAutocompleteListeners() {
+            const dropdown = document.getElementById('clientNameDropdown');
+            dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-customer-id');
+                    if (customerId) {
+                        const customer = getCustomerById(parseInt(customerId));
+                        if (customer) {
+                            selectedCustomerId = customer.id;
+                            document.getElementById('clientName').value = customer.name;
+                        }
+                    } else {
+                        // "Add as new" selected
+                        selectedCustomerId = null;
+                    }
+                    closeAutocomplete();
+                });
+            });
+        }
+
+        function updateHighlight(items) {
+            items.forEach((item, i) => {
+                if (i === highlightedIndex) {
+                    item.classList.add('highlighted');
+                } else {
+                    item.classList.remove('highlighted');
+                }
+            });
+        }
+
+        function closeAutocomplete() {
+            const dropdown = document.getElementById('clientNameDropdown');
+            dropdown.classList.remove('open');
+            highlightedIndex = -1;
+        }
+
+        // ============ Customer Panel ============
+
+        let currentViewCustomerId = null;
+
+        function openCustomerPanel() {
+            document.getElementById('customerPanel').classList.add('open');
+            showCustomerList();
+        }
+
+        function closeCustomerPanel() {
+            document.getElementById('customerPanel').classList.remove('open');
+            currentViewCustomerId = null;
+        }
+
+        function showCustomerList() {
+            document.getElementById('customerListView').style.display = 'block';
+            document.getElementById('customerDetailView').classList.remove('active');
+            document.getElementById('customerEditView').classList.remove('active');
+            document.getElementById('customerPanelTitle').textContent = 'Customers';
+            document.getElementById('customerSearchInput').value = '';
+            renderCustomerList(loadCustomers());
+        }
+
+        function filterCustomerList() {
+            const query = document.getElementById('customerSearchInput').value.trim().toLowerCase();
+            let customers = loadCustomers();
+            if (query.length > 0) {
+                customers = customers.filter(c =>
+                    c.name.toLowerCase().includes(query) || c.company.toLowerCase().includes(query)
+                );
+            }
+            renderCustomerList(customers);
+        }
+
+        function renderCustomerList(customers) {
+            const container = document.getElementById('customerListContainer');
+            if (customers.length === 0) {
+                container.innerHTML = '<div class="empty-state">No customers found.</div>';
+                return;
+            }
+
+            // Sort by most recent activity (updatedAt)
+            customers.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+            // Load all quotes once for performance
+            const allQuotes = loadQuotes();
+            container.innerHTML = customers.map(c => {
+                const quoteCount = allQuotes.filter(q => q.customerId === c.id).length;
+                const safeId = parseInt(c.id) || 0;
+                return '<div class="customer-list-item" onclick="viewCustomer(' + safeId + ')">' +
+                    '<div><div class="customer-list-name">' + escapeHtml(c.name) + '</div>' +
+                    (c.company ? '<div class="customer-list-company">' + escapeHtml(c.company) + '</div>' : '') + '</div>' +
+                    '<div class="customer-list-quotes">' + quoteCount + ' quote' + (quoteCount !== 1 ? 's' : '') + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function viewCustomer(id) {
+            const customer = getCustomerById(id);
+            if (!customer) return;
+            currentViewCustomerId = id;
+
+            document.getElementById('customerListView').style.display = 'none';
+            document.getElementById('customerDetailView').classList.add('active');
+            document.getElementById('customerEditView').classList.remove('active');
+            document.getElementById('customerPanelTitle').textContent = customer.name;
+
+            // Render detail info
+            const info = document.getElementById('customerDetailInfo');
+            info.innerHTML =
+                (customer.company ? '<div class="customer-detail-row"><span class="customer-detail-label">Company</span><span class="customer-detail-value">' + escapeHtml(customer.company) + '</span></div>' : '') +
+                (customer.email ? '<div class="customer-detail-row"><span class="customer-detail-label">Email</span><span class="customer-detail-value">' + escapeHtml(customer.email) + '</span></div>' : '') +
+                (customer.phone ? '<div class="customer-detail-row"><span class="customer-detail-label">Phone</span><span class="customer-detail-value">' + escapeHtml(customer.phone) + '</span></div>' : '') +
+                (customer.address ? '<div class="customer-detail-row"><span class="customer-detail-label">Address</span><span class="customer-detail-value">' + escapeHtml(customer.address) + '</span></div>' : '') +
+                (customer.notes ? '<div class="customer-detail-row"><span class="customer-detail-label">Notes</span><span class="customer-detail-value">' + escapeHtml(customer.notes) + '</span></div>' : '') +
+                '<div class="customer-detail-row"><span class="customer-detail-label">Created</span><span class="customer-detail-value">' + new Date(customer.createdAt).toLocaleDateString() + '</span></div>';
+
+            // Render quote history
+            const quotes = getQuotesForCustomer(id);
+            const historyContainer = document.getElementById('customerQuoteHistory');
+            if (quotes.length === 0) {
+                historyContainer.innerHTML = '<div class="empty-state">No quotes yet.</div>';
+            } else {
+                const validStatuses = ['draft', 'sent', 'accepted', 'declined'];
+                historyContainer.innerHTML = quotes.map(q => {
+                    const safeStatus = validStatuses.includes(q.status) ? q.status : 'draft';
+                    const safeId = parseInt(q.id) || 0;
+                    return '<div class="quote-history-item">' +
+                        '<div class="quote-history-info">' +
+                            '<div class="quote-history-number">' + escapeHtml(q.quoteNumber) + ' <span class="quote-status ' + safeStatus + '">' + safeStatus + '</span></div>' +
+                            '<div class="quote-history-desc">' + escapeHtml(q.projectDescription || '') + ' &mdash; ' + new Date(q.createdAt).toLocaleDateString() + '</div>' +
+                        '</div>' +
+                        '<div style="display:flex;align-items:center;gap:8px;">' +
+                            '<div class="quote-history-price">$' + (q.totalPrice || 0).toFixed(2) + '</div>' +
+                            '<select class="quote-status-select" onchange="changeQuoteStatus(' + safeId + ', this.value)">' +
+                                '<option value="draft"' + (safeStatus === 'draft' ? ' selected' : '') + '>Draft</option>' +
+                                '<option value="sent"' + (safeStatus === 'sent' ? ' selected' : '') + '>Sent</option>' +
+                                '<option value="accepted"' + (safeStatus === 'accepted' ? ' selected' : '') + '>Accepted</option>' +
+                                '<option value="declined"' + (safeStatus === 'declined' ? ' selected' : '') + '>Declined</option>' +
+                            '</select>' +
+                        '</div>' +
+                    '</div>';
+                }).join('');
+            }
+        }
+
+        function changeQuoteStatus(quoteId, status) {
+            updateQuoteStatus(quoteId, status);
+            // Refresh the view
+            if (currentViewCustomerId) {
+                viewCustomer(currentViewCustomerId);
+            }
+        }
+
+        function editCustomerForm() {
+            const customer = getCustomerById(currentViewCustomerId);
+            if (!customer) return;
+
+            document.getElementById('customerDetailView').classList.remove('active');
+            document.getElementById('customerEditView').classList.add('active');
+            document.getElementById('customerPanelTitle').textContent = 'Edit Customer';
+
+            document.getElementById('editCustomerName').value = customer.name;
+            document.getElementById('editCustomerCompany').value = customer.company;
+            document.getElementById('editCustomerEmail').value = customer.email;
+            document.getElementById('editCustomerPhone').value = customer.phone;
+            document.getElementById('editCustomerAddress').value = customer.address;
+            document.getElementById('editCustomerNotes').value = customer.notes;
+        }
+
+        function cancelCustomerEdit() {
+            document.getElementById('customerEditView').classList.remove('active');
+            if (currentViewCustomerId) {
+                viewCustomer(currentViewCustomerId);
+            } else {
+                showCustomerList();
+            }
+        }
+
+        function saveCustomerEdit() {
+            const name = document.getElementById('editCustomerName').value.trim();
+            if (!name) {
+                alert('Customer name is required.');
+                return;
+            }
+            updateCustomer(currentViewCustomerId, {
+                name: name,
+                company: document.getElementById('editCustomerCompany').value.trim(),
+                email: document.getElementById('editCustomerEmail').value.trim(),
+                phone: document.getElementById('editCustomerPhone').value.trim(),
+                address: document.getElementById('editCustomerAddress').value.trim(),
+                notes: document.getElementById('editCustomerNotes').value.trim()
+            });
+            viewCustomer(currentViewCustomerId);
+        }
+
+        function deleteCurrentCustomer() {
+            const customer = getCustomerById(currentViewCustomerId);
+            if (!customer) return;
+            const quoteCount = getQuotesForCustomer(currentViewCustomerId).length;
+            const msg = quoteCount > 0
+                ? 'Delete "' + customer.name + '"? Their ' + quoteCount + ' quote(s) will be preserved for records but unlinked.'
+                : 'Delete "' + customer.name + '"?';
+            if (confirm(msg)) {
+                deleteCustomer(currentViewCustomerId);
+                currentViewCustomerId = null;
+                showCustomerList();
+            }
+        }
+
+        // ============ Data Manager / Import / Export ============
+
+        function openDataManager() {
+            document.getElementById('dataManager').classList.add('open');
+            updateStorageDisplay();
+        }
+
+        function closeDataManager() {
+            document.getElementById('dataManager').classList.remove('open');
+        }
+
+        function updateStorageDisplay() {
+            const usage = getStorageUsage();
+            const maxBytes = 5 * 1024 * 1024; // 5MB
+            const percent = (usage / maxBytes) * 100;
+            const fill = document.getElementById('storageBarFill');
+            fill.style.width = Math.min(percent, 100) + '%';
+            fill.className = 'storage-bar-fill';
+            if (percent > 80) fill.classList.add('danger');
+            else if (percent > 60) fill.classList.add('warning');
+
+            const usageMB = (usage / (1024 * 1024)).toFixed(2);
+            const customers = loadCustomers().length;
+            const quotes = loadQuotes().length;
+            document.getElementById('storageInfo').textContent =
+                usageMB + ' MB / 5 MB used | ' + customers + ' customers, ' + quotes + ' quotes';
+        }
+
+        function exportAllData() {
+            const data = {
+                appName: 'LaserPricingCalculator',
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                preferences: loadPreferences(),
+                history: loadHistory(),
+                customers: loadCustomers(),
+                quotes: loadQuotes(),
+                meta: loadMeta()
+            };
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            saveAs(blob, 'laser-pricing-backup-' + new Date().toISOString().slice(0, 10) + '.json');
+        }
+
+        function triggerImport() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.appName !== 'LaserPricingCalculator') {
+                        alert('Invalid backup file: not a Laser Pricing Calculator export.');
+                        return;
+                    }
+
+                    const customerCount = (data.customers || []).length;
+                    const quoteCount = (data.quotes || []).length;
+                    const msg = 'Import ' + customerCount + ' customers and ' + quoteCount + ' quotes?\n\nThis will REPLACE all current data.';
+                    if (!confirm(msg)) return;
+
+                    // Replace all data (use defaults for missing fields)
+                    if (data.preferences && typeof data.preferences === 'object' && data.preferences.hourlyRate !== undefined) {
+                        savePreferences(data.preferences);
+                    } else {
+                        localStorage.removeItem(STORAGE_KEY);
+                    }
+                    saveHistory(data.history || []);
+                    saveCustomers(data.customers || []);
+                    saveQuotes(data.quotes || []);
+
+                    // Reconcile meta ID counters
+                    const importedMeta = data.meta || { nextCustomerId: 1, nextQuoteId: 1, dataVersion: 1 };
+                    const currentMeta = loadMeta();
+                    const maxCustomerId = Math.max(
+                        importedMeta.nextCustomerId,
+                        currentMeta.nextCustomerId,
+                        ...(data.customers || []).map(c => c.id + 1)
+                    );
+                    const maxQuoteId = Math.max(
+                        importedMeta.nextQuoteId,
+                        currentMeta.nextQuoteId,
+                        ...(data.quotes || []).map(q => q.id + 1)
+                    );
+                    saveMeta({ nextCustomerId: maxCustomerId, nextQuoteId: maxQuoteId, dataVersion: 1 });
+
+                    alert('Data imported successfully! The page will reload.');
+                    location.reload();
+                } catch (err) {
+                    alert('Error importing data: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            // Reset file input
+            event.target.value = '';
+        }
+
         // Initialize app
         function init() {
+            // Migrate old business info keys into preferences
+            migrateBusinessInfo();
+
             const prefs = loadPreferences();
             if (prefs) {
                 // Show calculator
                 document.getElementById('setupWizard').classList.add('hidden');
                 document.getElementById('calculator').classList.remove('hidden');
+
+                // Show header action buttons
+                document.getElementById('headerActions').style.display = 'flex';
 
                 // Pre-fill setup fee if applicable
                 if (prefs.includeSetupByDefault && prefs.setupFee > 0) {
@@ -2200,6 +3311,9 @@ PRICING OPTIONS:
                 document.getElementById('setupWizard').classList.remove('hidden');
                 document.getElementById('calculator').classList.add('hidden');
             }
+
+            // Initialize autocomplete
+            initAutocomplete();
         }
 
         // Wizard navigation
@@ -2213,7 +3327,7 @@ PRICING OPTIONS:
                 }
             } else if (stepNum === 3) {
                 const overhead = parseFloat(document.getElementById('overheadPercent').value);
-                if (overhead === null || overhead === undefined || overhead < 0) {
+                if (isNaN(overhead) || overhead < 0) {
                     alert('Please enter a valid overhead percentage');
                     return;
                 }
@@ -2246,7 +3360,7 @@ PRICING OPTIONS:
                 return;
             }
 
-            if (overheadPercent === null || overheadPercent === undefined || overheadPercent < 0) {
+            if (isNaN(overheadPercent) || overheadPercent < 0) {
                 alert('Please enter a valid overhead percentage');
                 return;
             }
@@ -2263,6 +3377,9 @@ PRICING OPTIONS:
             // Show calculator
             document.getElementById('setupWizard').classList.add('hidden');
             document.getElementById('calculator').classList.remove('hidden');
+
+            // Show header action buttons
+            document.getElementById('headerActions').style.display = 'flex';
 
             // Pre-fill setup fee if applicable
             if (includeSetupByDefault && setupFee > 0) {
@@ -2390,7 +3507,8 @@ PRICING OPTIONS:
                 overheadCost: overheadCostPerItem,
                 setupFee: projectSetupFee,
                 costPerItem: costPerItem,
-                quantity: quantity
+                quantity: quantity,
+                minutes: minutes
             };
 
             // Create visual profit breakdown (start with 50% markup, user can click tiers to update)
